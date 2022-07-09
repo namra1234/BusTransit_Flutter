@@ -5,8 +5,8 @@ import 'package:school_bus_transit/view/splash.dart';
 import 'package:material_color_gen/material_color_gen.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   runApp( MyApp());
 }

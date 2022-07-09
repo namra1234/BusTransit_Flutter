@@ -1,8 +1,8 @@
 class Constants {
 
-  static const int SPLASH_SCREEN_TIME = 2;
+  static int SPLASH_SCREEN_TIME = 2;
   static double height = 0, width = 0;
-  static const loggedInUserID = "";
+  static String loggedInUserID = "";
 
 }
 

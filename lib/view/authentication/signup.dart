@@ -1,16 +1,22 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/constants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/model/userModel.dart';
+import 'package:school_bus_transit/repository/userRep.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:multiselect/multiselect.dart';
+import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
+import 'package:map_address_picker/map_address_picker.dart';
+import 'package:map_address_picker/models/location_result.dart';
+// import 'package:geocoder/geocoder.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -23,8 +29,10 @@ enum Gender { male, female }
 
 class _SignupScreenState extends State<SignupScreen> {
 
- List<String> allschool = ['Cegep Gim','ISI','Concordia','Lasaale'];
+  List<String> allschool = ['Cegep Gim','ISI','Concordia','Lasaale'];
   List<String> selectedSchool = [];
+  bool uploadingImage=false;
+  String uploadedFileURL = "";
 
   String name = "";
   bool changeButton = false;
@@ -41,18 +49,35 @@ class _SignupScreenState extends State<SignupScreen> {
   GlobalKey<FormFieldState> _multiSelectKey = new GlobalKey<FormFieldState>();
   UserType? _userType = UserType.parents;
   Gender? gender = Gender.male;
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+  final Geolocator geolocator = Geolocator();
 
   register() async {
     if (_formKey.currentState!.validate()) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      singUp();
+
+      if(selectedSchool.length==0 && _userType==UserType.parents)
+        {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Please select school."),
+            ),
+          );
+
+        }
+      else if(uploadedFileURL=="")
+        {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Please select profile photo"),
+            ),
+          );
+        }
+      else
+        {
+          FocusManager.instance.primaryFocus?.unfocus();
+          singUp();
+        }
+
+
     }
   }
 
@@ -80,6 +105,28 @@ class _SignupScreenState extends State<SignupScreen> {
     postalCodeController.dispose();
     phoneNoController.dispose();
     confirmPasswordController.dispose();
+  }
+
+  LocationResult? locationResult;
+  _openLocationPicker() async {
+    var _result = await showLocationPicker(
+      context,
+      mapType: MapType.terrain,
+      requiredGPS: true,
+      automaticallyAnimateToCurrentLocation: true,
+      initialCenter: LatLng(45.555667, -73.668274),
+      desiredAccuracy: LocationAccuracy.best,
+      title: "Pick your location",
+      layersButtonEnabled: true,
+      initialZoom: 16,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+
+    if (mounted) setState(() => locationResult = _result);
+
+    // locationResult!.latLng!.latitude;
+
+
   }
 
   @override
@@ -124,15 +171,40 @@ class _SignupScreenState extends State<SignupScreen> {
                                   getImage();
                                 },
                                   child: new Center(
-                                      child: Container(
-                                          height: Constants.width * 0.3,
-                                          width: Constants.width * 0.3,
+                                      child: uploadedFileURL == "" ?
+                                      Container(
+                                          height: Constants.height * 0.12,
+                                          width: Constants.height * 0.12,
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               image: new DecorationImage(
                                                   fit: BoxFit.cover,
                                                   image:
-                                                  AssetImage('assets/images/person.png')))))),
+                                                  AssetImage('assets/images/person.png'))))
+                                  :  ClipRRect(
+                                        borderRadius: BorderRadius.circular(Constants.height * 0.12),
+                                        child: Image.network(
+                                          uploadedFileURL,
+                                          height: Constants.height * 0.12,
+                                          width: Constants.height * 0.12,
+                                          fit: BoxFit.fill,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(20),
+                                                child: Image.asset(
+                                                  'assets/images/person.png',
+                                                  height: Constants.height * 0.12,
+                                                  width: Constants.height * 0.12,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                  )),
                             ),
                             Container(
                               child: Padding(
@@ -184,17 +256,23 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                     TextFormField(
                                       controller: addressController,
-                                      decoration: const InputDecoration(
+                                      decoration:  InputDecoration(
                                         labelStyle:
                                             TextStyle(color: Colors.black),
                                         hintText: "Address",
                                         labelText: "Enter Address",
+                                        suffixIcon:  InkWell(
+                                          onTap: _openLocationPicker,
+                                          child: Icon(
+                                            Icons.my_location,
+                                            color: ColorConstants.blackColor,
+                                          ),
+                                        ),
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
                                           return "Field can not be empty";
                                         }
-
                                         return null;
                                       },
                                     ),
@@ -439,7 +517,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 30)
+                    SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -450,30 +528,82 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+
+  String getRandom(int length){
+    const ch = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
+    Random r = Random();
+    return String.fromCharCodes(Iterable.generate(
+        length, (_) => ch.codeUnitAt(r.nextInt(ch.length))));
+  }
+
   Future getImage() async {
     final picker = ImagePicker();
 
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    // setState(() {
-    //   uploadingImage = true;
+    setState(() {
+      uploadingImage = true;
+    });
+
+    Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child(getRandom(15));
+
+    UploadTask uploadTask =
+    storageReference.putFile(File(pickedFile!.path.toString()));
+
+
+
+    //
+    await uploadTask.then((taskSnapshot) async {
+      uploadedFileURL = await taskSnapshot.ref.getDownloadURL();
+      showSnackBar("Successfully uploaded profile picture");
+    }).catchError((e) {
+      showSnackBar("Failed to upload profile picture");
+    });
+
+
+
+
+    // uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+    //   switch (taskSnapshot.state) {
+    //     case TaskState.running:
+    //       final progress =
+    //           100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+    //       print("Upload is $progress% complete.");
+    //       break;
+    //     case TaskState.paused:
+    //       print("Upload is paused.");
+    //       break;
+    //     case TaskState.canceled:
+    //       print("Upload was canceled");
+    //       break;
+    //     case TaskState.error:
+    //       print(TaskState.error);
+    //     // Handle unsuccessful uploads
+    //       break;
+    //     case TaskState.success:
+    //     // Handle successful uploads on complete
+    //     // ...
+    //       break;
+    //   }
     // });
-    // FirebaseStorage storage = FirebaseStorage.instance;
-    // Reference storageReference = FirebaseStorage.instance
-    //     .ref()
-    //     .child(Constants.loggedInUserID + Constants.dish.length.toString());
-    // UploadTask uploadTask =
-    // storageReference.putFile(File(pickedFile!.path.toString()));
-    // await uploadTask.then((taskSnapshot) async {
-    //   uploadedFileURL = await taskSnapshot.ref.getDownloadURL();
-    //   // _showSnackBar("Successfully uploaded profile picture");
-    // }).catchError((e) {
-    //   // _showSnackBar("Failed to upload profile picture");
-    // });
-    // setState(() {
-    //   uploadingImage = false;
-    // });
+
+
+
+
+    setState(() {
+      uploadingImage = false;
+    });
   }
+
+ void showSnackBar(String message) {
+   ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(
+       content: Text(message),
+     ),
+   );
+ }
 
   singUp() async {
     FirebaseAuth.instance
@@ -482,28 +612,55 @@ class _SignupScreenState extends State<SignupScreen> {
       password: passwordController.text,
     )
         .then((value) async {
-      // Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
+      Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
       User? user = value.user;
 
-      // await user!.updateProfile(
-      //   displayName: fullNameController.text,
-      //   photoURL: "",
-      // );
+      await user!.updateProfile(
+        displayName: fullNameController.text,
+        photoURL: uploadedFileURL,
+      );
+
+      String u="";
+      if(_userType==UserType.parents)
+        {
+          u="driver";
+        }
+      else
+        {
+          u="parents";
+        }
 
 
-      // await UserRepository().createUser(
-      //   UserModel(
-      //       Constants.loggedInUserID,
-      //       emailController.text,
-      //       fullNameController.text,
-      //       addressController.text,
-      //       postalCodeController.text,
-      //       phoneNoController.text,
-      //       isChef
-      //   ),
-      // );
+      String g="";
+      if(gender==Gender.male)
+      {
+        g="male";
+      }
+      else
+      {
+        u="female";
+      }
+
+      await UserRepository().createUser(
+        UserModel(
+            Constants.loggedInUserID,
+            emailController.text,
+            fullNameController.text,
+            addressController.text,
+            uploadedFileURL,
+            phoneNoController.text,
+            u,
+            "",
+            g,
+            "",
+            "",
+            selectedSchool
+        ),
+      );
 
 
+
+      // uploadedFileURL="";
       emailController.text = "";
       passwordController.text = "";
       fullNameController.text = "";
@@ -512,10 +669,6 @@ class _SignupScreenState extends State<SignupScreen> {
       confirmPasswordController.text = "";
 
       showSnackBar("Account has been created Successfully");
-
-      // Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
-      // const LoginScreen()));
-
 
     }).catchError((e) {
       showSnackBar(e.message);

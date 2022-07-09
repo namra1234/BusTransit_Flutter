@@ -54,8 +54,14 @@ dev_dependencies:
   firebase_storage:
   shared_preferences:
   material_color_gen:
+  cloud_firestore:
   multiselect:
   image_picker:
+  geocode: ^1.0.1
+  map_address_picker: ^0.3.0
+  geocoding: ^2.0.4
+  geocoder:
+  location_geocoder: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

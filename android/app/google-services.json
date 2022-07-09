@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1001136823104-t48eqvcj3ujdgtelk9s5ksbd4ffe4269.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.school_bus_transit",
+            "certificate_hash": "15e5f14b5aa6f5b4c7dde78ad96e59a4cc40d9c9"
+          }
+        },
+        {
+          "client_id": "1001136823104-ttnvc66lrah5lm95mqnj2og6ues811pk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.school_bus_transit",
+            "certificate_hash": "b109c2426b86550aded565d89cef2a6fb2ad39ae"
+          }
+        },
+        {
           "client_id": "1001136823104-rbh8tvs5un0ol2m7ee8dr57hftp9ib0v.apps.googleusercontent.com",
           "client_type": 3
         }
