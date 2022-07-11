@@ -186,9 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
                           children: [
-                            const Text(
+                             Text(
                               "Are You a new User?", style: TextStyle(
-                                fontSize: 17, color: ColorConstants.customBlackColor,fontWeight: FontWeight.bold),
+                                fontSize: 17, color: Colors.black),
                             ),
                             InkWell(
                               onTap: () {
