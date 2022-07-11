@@ -640,11 +640,11 @@ class _SignupScreenState extends State<SignupScreen> {
       String u="";
       if(_userType==UserType.parents)
         {
-          u="driver";
+          u="parents";
         }
       else
         {
-          u="parents";
+          u="driver";
         }
 
 

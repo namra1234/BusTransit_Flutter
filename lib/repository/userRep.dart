@@ -2,15 +2,14 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/userModel.dart';
 
 class UserRepository {
-  // final CollectionReference collection =
-  //     FirebaseFirestore.instance.collection('User');
+  final CollectionReference collection =
+      FirebaseFirestore.instance.collection('User');
 
-  var collection;
   dynamic createUser(UserModel Usermodel) async {
 
     final docSnapshot = await collection
