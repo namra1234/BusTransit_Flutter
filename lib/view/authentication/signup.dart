@@ -8,6 +8,7 @@ import 'package:school_bus_transit/common/constants.dart';
 import 'package:school_bus_transit/model/userModel.dart';
 import 'package:school_bus_transit/repository/userRep.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -499,9 +500,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const LoginScreen()));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                         LoginScreen()));
                               },
                               child: Container(
                                 child: Text('Sign in',

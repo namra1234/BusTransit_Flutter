@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/view/authentication/signup.dart';
 import '../common/buttonStyle.dart';
 import '../common/colorConstants.dart';
@@ -42,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Timer(_duartion, () async {
 
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-              SignupScreen()), (Route<dynamic> route) => false);
+              LoginScreen()), (Route<dynamic> route) => false);
         });
       }
     }
@@ -54,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(_duartion, () async {
 
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            SignupScreen()), (Route<dynamic> route) => false);
+            LoginScreen()), (Route<dynamic> route) => false);
 
       });
     }
