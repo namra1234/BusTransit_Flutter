@@ -62,6 +62,7 @@ dev_dependencies:
   geocoding: ^2.0.4
   geocoder:
   location_geocoder: ^1.0.5
+  flutter_google_places_hoc081098: ^1.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

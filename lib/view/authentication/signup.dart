@@ -1,22 +1,34 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:geocode/geocode.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/constants.dart';
 import 'package:school_bus_transit/model/userModel.dart';
 import 'package:school_bus_transit/repository/userRep.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geocoding/geocoding.dart';
 import 'package:map_address_picker/map_address_picker.dart';
 import 'package:map_address_picker/models/location_result.dart';
-// import 'package:geocoder/geocoder.dart';
+
+
+
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+const kGoogleApiKey = "AIzaSyAgpLONoQLPhvXWh05qs8cCBdmZS9NDolw";
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+final searchScaffoldKey = GlobalKey<ScaffoldState>();
+
+
+// to get places detail (lat/lng)
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -33,6 +45,8 @@ class _SignupScreenState extends State<SignupScreen> {
   List<String> selectedSchool = [];
   bool uploadingImage=false;
   String uploadedFileURL = "";
+  double lattitude = 0;
+  double longitude = 0;
 
   String name = "";
   bool changeButton = false;
@@ -108,26 +122,23 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   LocationResult? locationResult;
-  _openLocationPicker() async {
-    var _result = await showLocationPicker(
-      context,
-      mapType: MapType.terrain,
-      requiredGPS: true,
-      automaticallyAnimateToCurrentLocation: true,
-      initialCenter: LatLng(45.555667, -73.668274),
-      desiredAccuracy: LocationAccuracy.best,
-      title: "Pick your location",
-      layersButtonEnabled: true,
-      initialZoom: 16,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    );
-
-    if (mounted) setState(() => locationResult = _result);
-
-    // locationResult!.latLng!.latitude;
-
-
-  }
+  // _openLocationPicker() async {
+  //   var _result = await showLocationPicker(
+  //     context,
+  //     mapType: MapType.terrain,
+  //     requiredGPS: true,
+  //     automaticallyAnimateToCurrentLocation: true,
+  //     initialCenter: LatLng(45.555667, -73.668274),
+  //     desiredAccuracy: LocationAccuracy.best,
+  //     title: "Pick your location",
+  //     layersButtonEnabled: true,
+  //     initialZoom: 16,
+  //     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+  //   );
+  //
+  //   if (mounted) setState(() => locationResult = _result);
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -254,27 +265,31 @@ class _SignupScreenState extends State<SignupScreen> {
                                         return null;
                                       },
                                     ),
-                                    TextFormField(
-                                      controller: addressController,
-                                      decoration:  InputDecoration(
-                                        labelStyle:
-                                            TextStyle(color: Colors.black),
-                                        hintText: "Address",
-                                        labelText: "Enter Address",
-                                        suffixIcon:  InkWell(
-                                          onTap: _openLocationPicker,
-                                          child: Icon(
-                                            Icons.my_location,
-                                            color: ColorConstants.blackColor,
+                                    InkWell(
+                                      onTap: _handlePressButton,
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        controller: addressController,
+                                        decoration:  InputDecoration(
+                                          labelStyle:
+                                              TextStyle(color: Colors.black),
+                                          hintText: "Address",
+                                          labelText: "Enter Address",
+                                          suffixIcon:  InkWell(
+                                            onTap: _handlePressButton,
+                                            child: Icon(
+                                              Icons.my_location,
+                                              color: ColorConstants.blackColor,
+                                            ),
                                           ),
                                         ),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return "Field can not be empty";
+                                          }
+                                          return null;
+                                        },
                                       ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return "Field can not be empty";
-                                        }
-                                        return null;
-                                      },
                                     ),
                                     TextFormField(
                                       controller: phoneNoController,
@@ -638,7 +653,7 @@ class _SignupScreenState extends State<SignupScreen> {
       }
       else
       {
-        u="female";
+        g="female";
       }
 
       await UserRepository().createUser(
@@ -652,8 +667,8 @@ class _SignupScreenState extends State<SignupScreen> {
             u,
             "",
             g,
-            "",
-            "",
+            lattitude.toString(),
+            longitude.toString(),
             selectedSchool
         ),
       );
@@ -674,4 +689,36 @@ class _SignupScreenState extends State<SignupScreen> {
       showSnackBar(e.message);
     });
   }
+
+  void onError(PlacesAutocompleteResponse response) {
+    homeScaffoldKey.currentState!.showSnackBar(
+      SnackBar(content: Text(response.errorMessage!)),
+    );
+  }
+
+  Future<void> _handlePressButton() async {
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: kGoogleApiKey,
+      onError: onError,
+      mode: Mode.overlay,
+      language: "en",
+      components: [Component(Component.country, "ca")],
+    );
+
+    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!.placeId!);
+    final lat = detail.result.geometry!.location.lat;
+    final lng = detail.result.geometry!.location.lng;
+
+    lattitude = lat;
+    longitude =lng;
+    addressController.text = p.description!;
+    // showSnackBar("${p.description} - $lat/$lng");
+
+    // displayPrediction(p!, homeScaffoldKey.currentState!);
+  }
 }
+
+
