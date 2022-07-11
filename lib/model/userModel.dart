@@ -13,7 +13,7 @@ class UserModel {
   final String gender;
   final String user_lat;
   final String user_long;
-  final List<String> school_id;
+  final List<dynamic> school_id;
 
 
   UserModel(this.user_id,this.email_id,this.fullName,  this.address,this.photo_url,this.phone_no,this.user_type,

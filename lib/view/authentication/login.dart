@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
-import 'package:school_bus_transit/repository/userRep.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../repository/userRep.dart';
 import './signup.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -55,22 +55,31 @@ class _LoginScreenState extends State<LoginScreen> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(
           email: emailController.text.trim(), password: passwordController.text)
-          .then((value) async {
+          .then((value) async
+      {
         Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
+        await UserRepository().getUser(Constants.userdata.user_id);
 
-        // await UserRepository().getUser(Constants.loggedInUserID);
         //
-        // SharedPreferences preferences = await SharedPreferences.getInstance();
-        // preferences.setBool('isLoggedin', true);
-        //
-        // preferences.setString(
-        //     'fullName', Constants.userdata.fullName);
-        // preferences.setString('email', Constants.userdata.email);
-        // preferences.setString('address', Constants.userdata.address);
-        // preferences.setString('phoneNo', Constants.userdata.phoneNo);
-        // preferences.setString('postal_code', Constants.userdata.postal_code);
-        // preferences.setString('userID', Constants.loggedInUserID);
-        // preferences.setBool('isChef', Constants.userdata.isChef);
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setBool('isLoggedin', true);
+
+        preferences.setString('user_id', Constants.userdata.user_id);
+        preferences.setString(
+            'fullName', Constants.userdata.fullName);
+        preferences.setString('email_id', Constants.userdata.email_id);
+        preferences.setString('address', Constants.userdata.address);
+        preferences.setString('phone_no', Constants.userdata.phone_no);
+        preferences.setString('user_type', Constants.userdata.user_type);
+
+        preferences.setString('gender', Constants.userdata.gender);
+        preferences.setString('user_lat', Constants.userdata.user_lat);
+        preferences.setString('user_long', Constants.userdata.user_long);
+        preferences.setString('photo_url', Constants.userdata.photo_url);
+        preferences.setString('bus_id', Constants.userdata.bus_id);
+
+
+
         //
         // Constants.myName = Constants.userdata.fullName;
         // Constants.myEmail = Constants.userdata.email;
