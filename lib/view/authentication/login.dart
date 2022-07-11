@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
+import 'package:school_bus_transit/repository/userRep.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
 
+  late TextEditingController emailController,
+      passwordController;
+
 
   void showSnackBar(String message) {
 
@@ -33,19 +37,62 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
-
-
 
   login() async {
     if(_formKey.currentState!.validate()){
-      // showSnackBar("login successfully done");
+      FocusManager.instance.primaryFocus?.unfocus();
+
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+          email: emailController.text.trim(), password: passwordController.text)
+          .then((value) async {
+        Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
+
+        // await UserRepository().getUser(Constants.loggedInUserID);
+        //
+        // SharedPreferences preferences = await SharedPreferences.getInstance();
+        // preferences.setBool('isLoggedin', true);
+        //
+        // preferences.setString(
+        //     'fullName', Constants.userdata.fullName);
+        // preferences.setString('email', Constants.userdata.email);
+        // preferences.setString('address', Constants.userdata.address);
+        // preferences.setString('phoneNo', Constants.userdata.phoneNo);
+        // preferences.setString('postal_code', Constants.userdata.postal_code);
+        // preferences.setString('userID', Constants.loggedInUserID);
+        // preferences.setBool('isChef', Constants.userdata.isChef);
+        //
+        // Constants.myName = Constants.userdata.fullName;
+        // Constants.myEmail = Constants.userdata.email;
+
+        showSnackBar("Login Successfully");
+
+        // if(Constants.userdata.isChef)
+        // {
+        //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+        //       ChefMainPage()), (Route<dynamic> route) => false);
+        // }
+        // else
+        // {
+        //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+        //       FoodieMainPage()), (Route<dynamic> route) => false);
+        // }
+
+
+
+      }).catchError((e) {
+        showSnackBar(e.message);
+      });
     }
   }
 
@@ -81,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           hintText: "User Name",
                           labelText: "Enter a User name",
@@ -103,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextFormField(
                         obscureText: true,
+                        controller: passwordController,
                         decoration: InputDecoration(
                           hintText: "Enter password",
                           labelText: "Password",
