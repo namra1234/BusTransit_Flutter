@@ -7,6 +7,7 @@ import '../../common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../repository/schoolRep.dart';
 import 'addSchoolScreen.dart';
+import 'busSection.dart';
 
 class SchoolSection extends StatefulWidget{
   @override
@@ -27,7 +28,7 @@ class _SchoolSectionState extends State<SchoolSection>{
   @override
   void initState() {
     super.initState();
-    getDishList();
+    getSchoolList();
   }
 
   @override
@@ -35,7 +36,7 @@ class _SchoolSectionState extends State<SchoolSection>{
     super.dispose();
   }
 
-  getDishList() async {
+  getSchoolList() async {
     List<SchoolModel> schoolList = [];
 
     schoolList = await SchoolRepository().getAllSchool();
@@ -45,6 +46,7 @@ class _SchoolSectionState extends State<SchoolSection>{
       Constants.schoolList.addAll(schoolList);
       // print("$Constants.$schoolList.$length);
       loading = false;
+      setState(() {});
     });
   }
 
@@ -91,7 +93,7 @@ class _SchoolSectionState extends State<SchoolSection>{
 
 
   Widget titleSection(){
-    return Container(child: Text("· School List ·",style: TextStyle(fontSize: 40,)),margin: EdgeInsets.all(20),);
+    return Container(child: Text("· School List ·",style: TextStyle(fontSize: 35,)),margin: EdgeInsets.all(20),);
   }
 
   Widget SchoolListSection(){
@@ -109,7 +111,7 @@ class _SchoolSectionState extends State<SchoolSection>{
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ChefListView(Constants.schoolList[index], index),
+                  SchoolListView(Constants.schoolList[index], index),
                   SizedBox(
                     height: 15,
                   )
@@ -124,21 +126,21 @@ class _SchoolSectionState extends State<SchoolSection>{
           color: ColorConstants.schoolListColor,
         ))
         : Center(
-        child: Text("Please Add Dish",
+        child: Text("Please Add School",
             style: CustomTextStyle.mediumText(25, Constants.width)
                 .apply(fontStyle: FontStyle.italic)));
   }
 
-  Widget ChefListView(SchoolModel schoolModel, int index) {
+  Widget SchoolListView(SchoolModel schoolModel, int index) {
     return ZoomTapAnimation(
       onTap: () {
-        print("clickd");
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) =>
-        //             AddDishes(dish_: dishModel, index: index)))
-        //     .then((value) => {getDishList()});
+        print("clicked");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    BusSection(school_: schoolModel)))
+            .then((value) => {getSchoolList()});
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

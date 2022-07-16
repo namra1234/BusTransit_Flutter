@@ -7,6 +7,9 @@ import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../repository/busRep.dart';
+import '../../repository/schoolRep.dart';
+
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({Key? key}) : super(key: key);
   @override
@@ -15,6 +18,7 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
 
+  int schoolCount = 0, busCount = 0, driverCount = 0;
 
 
   void showSnackBar(String message) {
@@ -29,7 +33,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     super.initState();
-
+    schoolCount = 0;
+    busCount = 0;
+    driverCount = 0;
+    getSchoolCount();
+    getBusCount();
   }
 
   @override
@@ -86,7 +94,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "10",textAlign: TextAlign.center,style:
+                                      "$schoolCount",textAlign: TextAlign.center,style:
                                     TextStyle(
                                         fontSize: 40,color: Colors.black,fontWeight: FontWeight.bold
                                     ),
@@ -129,7 +137,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       children: [
 
                                         Text(
-                                          "20",textAlign: TextAlign.left,style:
+                                          "$busCount",textAlign: TextAlign.left,style:
                                         TextStyle(
                                             fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold
                                         ),
@@ -168,7 +176,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 ),
                                 ),
                                 Text(
-                                  "20",textAlign: TextAlign.center,style:
+                                  "$driverCount",textAlign: TextAlign.center,style:
                                 TextStyle(
                                     fontSize: 40,color: Colors.black,fontWeight: FontWeight.bold
                                 ),
@@ -210,6 +218,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         ),
       ),
     );
+  }
+
+
+  getSchoolCount() async {
+    schoolCount = await SchoolRepository().SchoolCount();
+    setState(() {});
+  }
+
+  getBusCount() async {
+    busCount = await BusRepository().BusCount();
+    setState(() {});
   }
 
 

@@ -11,7 +11,13 @@ class ColorConstants {
   static const customWhiteColor = Color(0xFFFBFAF6);
 
   static const schoolListColor = Color(0xFFEFEAD8);
-  // static const schoolListColor = Color(0xFF15179E);
+  static const titleGreyColor = Color(0xFFF3F4EE);
+
+
+  static const TripOnColor = Color(0xFF29941F);
+  static const TripOffColor = Color(0xFFFD5A33);
+
+
 
 
 
