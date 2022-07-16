@@ -1,5 +1,6 @@
 import 'package:school_bus_transit/model/userModel.dart';
 
+import '../model/busModel.dart';
 import '../model/schoolModel.dart';
 
 class Constants {
@@ -9,6 +10,7 @@ class Constants {
   static String loggedInUserID = "";
   static UserModel userdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
   static List<SchoolModel> schoolList=[];
+  static List<BusModel> busList=[];
 
 }
 

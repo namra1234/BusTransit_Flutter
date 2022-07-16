@@ -18,7 +18,7 @@ class SchoolRepository{
 
       for(int i=0;i<snapshot.docs.length;i++)
       {
-        Map<String, dynamic>? data=snapshot.docs[0].data() as Map<String, dynamic>?;
+        Map<String, dynamic>? data=snapshot.docs[i].data() as Map<String, dynamic>?;
         String? school_id = data!["school_id"].toString();
         String? name =      data!["name"].toString();
         String? email_id =  data!["email_id"].toString();
@@ -27,7 +27,7 @@ class SchoolRepository{
         String? lat =       data!["lat"].toString();
         String? long =      data!["long"].toString();
 
-
+        // print(name);
         Map? SchoolMap =  SchoolModel(school_id, name, email_id, phone_no,address,lat, long).toJson();
 
         schoolList.add(SchoolModel.fromMap(SchoolMap as Map<String,dynamic>));
@@ -64,6 +64,19 @@ class SchoolRepository{
     catch(e){
       return false;
     }
+  }
+
+
+  dynamic SchoolCount() async {
+
+    int count = 0;
+    print("----------------------------------------> call SchoolCount");
+    final docSnapshot = await collection.get().then((var snapshot)
+    async {
+      final newDocRef = collection.doc();
+      count = snapshot.docs.length;
+    });
+    return count;
   }
 
 
