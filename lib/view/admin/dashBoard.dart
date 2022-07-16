@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
+import 'package:school_bus_transit/view/admin/schoolSection.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,7 +66,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
                             InkWell(
                               onTap: () {
-                                print("hello");
+                                // print("hello");
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        SchoolSection()
+                                ));
+
                               },
                               child: Container(
                                 height: 150,

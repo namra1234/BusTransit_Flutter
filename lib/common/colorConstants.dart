@@ -10,6 +10,10 @@ class ColorConstants {
   static const customGreyColor = Color(0xFF8C8C8C);
   static const customWhiteColor = Color(0xFFFBFAF6);
 
+  static const schoolListColor = Color(0xFFEFEAD8);
+  // static const schoolListColor = Color(0xFF15179E);
+
+
 
 
   static const whiteColor = Colors.white;

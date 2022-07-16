@@ -38,7 +38,7 @@ class SignupScreen extends StatefulWidget {
   _SignupScreenState createState() => _SignupScreenState();
 }
 
-enum UserType { parents, driver }
+enum UserType { PARENT, DRIVER }
 enum Gender { male, female }
 
 class _SignupScreenState extends State<SignupScreen> {
@@ -63,14 +63,14 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   GlobalKey<FormFieldState> _multiSelectKey = new GlobalKey<FormFieldState>();
-  UserType? _userType = UserType.parents;
+  UserType? _userType = UserType.PARENT;
   Gender? gender = Gender.male;
   final Geolocator geolocator = Geolocator();
 
   register() async {
     if (_formKey.currentState!.validate()) {
 
-      if(selectedSchool.length==0 && _userType==UserType.parents)
+      if(selectedSchool.length==0 && _userType==UserType.PARENT)
         {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -396,7 +396,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                   title:  Align(
                                                       alignment: Alignment(-4.1, 0),
                                                       child: Text('Parents')),
-                                                  value: UserType.parents,
+                                                  value: UserType.PARENT,
                                                   groupValue: _userType,
                                                   onChanged: (UserType? value) {
                                                     setState(() {
@@ -417,7 +417,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                 title:  Align(
                                                     alignment: Alignment(-1.3, 0),
                                                     child: Text('Driver')),
-                                                value: UserType.driver,
+                                                value: UserType.DRIVER,
                                                 groupValue: _userType,
                                                 onChanged: (UserType? value) {
                                                   setState(() {
@@ -429,7 +429,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         ],
                                       ),
                                     ),
-                                    UserType.parents == _userType ? DropDownMultiSelect(
+                                    UserType.PARENT == _userType ? DropDownMultiSelect(
                                       onChanged: (List<String> x) {
                                         setState(() {
                                           selectedSchool =x;
@@ -638,13 +638,13 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       String u="";
-      if(_userType==UserType.parents)
+      if(_userType==UserType.PARENT)
         {
-          u="parents";
+          u="PARENT";
         }
       else
         {
-          u="driver";
+          u="DRIVER";
         }
 
 
