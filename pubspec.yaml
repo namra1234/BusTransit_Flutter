@@ -38,6 +38,7 @@ dependencies:
   connectivity:
   http:
   email_validator:
+  zoom_tap_animation: ^1.1.0
 
 dev_dependencies:
   flutter_test:

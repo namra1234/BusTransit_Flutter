@@ -25,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController emailController,
       passwordController;
 
-
   void showSnackBar(String message) {
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
