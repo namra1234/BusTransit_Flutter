@@ -68,6 +68,41 @@ class BusRepository{
 
   }
 
+  dynamic getBusInfo(String bus_id) async {
+
+    print(bus_id + " -- from BusRap ->  getBusInfo()");
+
+    final docSnapshot = await collection
+        .where("bus_id", isEqualTo: bus_id)
+        .get()
+        .then((var snapshot) async {
+      final newDocRef = collection.doc();
+
+      // dynamic d1=snapshot.docs[0].data();
+
+      Map<String, dynamic>? data=snapshot.docs[0].data() as Map<String, dynamic>?;
+      String? bus_id          = data!["bus_id"].toString();
+      int    bus_number      = data!["bus_number"];
+      String? school_id       = data!["school_id"].toString();
+      bool   active_sharing  = data!["active_sharing"];
+      bool   going_to_school = data!["going_to_school"];
+      String? current_lat     = data!["current_lat"].toString();
+      String? current_long    = data!["current_long"].toString();
+      String? destination     = data!["destination"].toString();
+      String? destination_lat = data!["destination_lat"].toString();
+      String? destination_long= data!["destination_long"].toString();
+      String? source          = data!["source"].toString();
+      String? source_lat      = data!["source_lat"].toString();
+      String? source_long     = data!["source_long"].toString();
+
+
+      Map? BusMap =  BusModel(bus_id,bus_number,school_id,active_sharing,going_to_school,current_lat,current_long,source,source_lat,source_long,destination,destination_lat,destination_long).toJson();
+
+      Constants.singleBusData =BusModel.fromMap(BusMap as Map<String,dynamic>);
+      return BusMap;
+    });
+  }
+
   dynamic updateBus(Map<String, Object?> busModel,String? docId) async{
     try{
       final newDocRef = collection.doc(docId);
@@ -91,6 +126,19 @@ class BusRepository{
     });
     return count;
   }
+
+  dynamic deleteBus(String? bus_id) async{
+    try{
+      final newDocRef = collection.doc(bus_id);
+      await newDocRef.delete();
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
+
+
 
 
 }

@@ -119,6 +119,7 @@ class DriverRepository{
 
       Map? UserMap =  UserModel(user_id,email_id,fullName,address,photo_url,phone_no,user_type,bus_id,gender,user_lat,user_long,school_id).toJson();
 
+      print("$fullName --------------> from driverRap ---> getBusDriver()");
       Constants.CurrentDriverdata=UserModel.fromMap(UserMap as Map<String,dynamic>);
       return UserMap;
     });
@@ -129,6 +130,20 @@ class DriverRepository{
     int count = 0;
     print("----------------------------------------> call busCount");
     final docSnapshot = await collection.where("user_type", isEqualTo: "DRIVER").get().then((var snapshot)
+    async {
+      final newDocRef = collection.doc();
+      count = snapshot.docs.length;
+      print(count);
+    });
+    return count;
+  }
+
+  dynamic driverBusCount(String bus_id) async {
+    int count = 0;
+    print("----------------------------------------> call busCount");
+    final docSnapshot = await collection
+        .where("user_type", isEqualTo: "DRIVER")
+        .where("bus_id", isEqualTo: bus_id).get().then((var snapshot)
     async {
       final newDocRef = collection.doc();
       count = snapshot.docs.length;
@@ -160,7 +175,6 @@ class DriverRepository{
       return false;
     }
   }
-
 
 
 

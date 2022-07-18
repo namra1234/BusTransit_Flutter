@@ -71,6 +71,13 @@ class _DriverSectionState extends State<DriverSection>{
     Navigator.pop(context);
   }
 
+  deleteBus(String bus_id) async
+  {
+    print("calling driverSection -> deleteBus()");
+    await BusRepository().deleteBus(bus_id);
+    Navigator.pop(context);
+  }
+
 
 
   @override
@@ -321,6 +328,10 @@ class _DriverSectionState extends State<DriverSection>{
         child: Text("Delete Bus", style: TextStyle(fontSize: 20.0),),
 
         onPressed: () {
+
+
+          deleteBus(widget.bus_.bus_id);
+
           print("Delete Bus");
         },
       ),
