@@ -13,6 +13,9 @@ class ColorConstants {
   static const schoolListColor = Color(0xFFEFEAD8);
   static const titleGreyColor = Color(0xFFF3F4EE);
 
+  static const DeleteButtonColor = Color(0xFFE52C00);
+
+
 
   static const TripOnColor = Color(0xFF29941F);
   static const TripOffColor = Color(0xFFFD5A33);

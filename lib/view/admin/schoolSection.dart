@@ -140,7 +140,9 @@ class _SchoolSectionState extends State<SchoolSection>{
             MaterialPageRoute(
                 builder: (context) =>
                     BusSection(school_: schoolModel)))
-            .then((value) => {getSchoolList()});
+            .then((value) => {
+            getSchoolList()
+            });
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

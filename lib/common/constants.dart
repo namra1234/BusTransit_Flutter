@@ -12,6 +12,10 @@ class Constants {
   static List<SchoolModel> schoolList=[];
   static List<BusModel> busList=[];
 
+  static UserModel CurrentDriverdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
+
+  static List<UserModel> driverList = [new UserModel('', '', '', '', '', '', '', '', '', '', '', [])];
+
 }
 
 class validationMsg {
