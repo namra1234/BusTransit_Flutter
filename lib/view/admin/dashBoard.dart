@@ -193,7 +193,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
 
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20.0,300.0,20.0,20.0),

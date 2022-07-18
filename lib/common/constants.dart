@@ -12,9 +12,15 @@ class Constants {
   static List<SchoolModel> schoolList=[];
   static List<BusModel> busList=[];
 
+  static BusModel singleBusData = new BusModel("", 0, "", false, false, "", "", "", "", "", "", "", "");
+
   static UserModel CurrentDriverdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
 
   static List<UserModel> driverList = [new UserModel('', '', '', '', '', '', '', '', '', '', '', [])];
+
+  static void CurrentDriverData_reset(){
+    CurrentDriverdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
+  }
 
 }
 

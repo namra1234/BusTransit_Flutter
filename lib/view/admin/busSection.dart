@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:school_bus_transit/model/schoolModel.dart';
+import 'package:school_bus_transit/model/userModel.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../common/colorConstants.dart';
@@ -8,7 +9,9 @@ import '../../common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';
+import '../../repository/driverRep.dart';
 import 'addBusScreen.dart';
+import 'driver.dart';
 import 'driverSection.dart';
 
 class BusSection extends StatefulWidget{
@@ -57,6 +60,15 @@ class _BusSectionState extends State<BusSection>{
       // print("$Constants.$schoolList.$length);
       loading = false;
     });
+  }
+
+  Future<int> getAssignDriver(String bus_id) async
+  {
+    int count = 0;
+    print("calling -> getAssignDriver()");
+    count = await DriverRepository().driverBusCount(bus_id);
+    setState(() {});
+    return count;
   }
 
   @override
@@ -212,14 +224,30 @@ class _BusSectionState extends State<BusSection>{
   Widget BusListView(BusModel busModel, int index) {
     double c_width = MediaQuery.of(context).size.width*0.6;
     return ZoomTapAnimation(
-      onTap: () {
+      onTap: () async {
         print("clicked");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    DriverSection(school_: widget.school_, bus_: busModel)))
-            .then((value) => {getBusList(widget.school_.school_id)});
+        int count = await getAssignDriver(busModel.bus_id);
+        print("$count ----------------> bus driver associate");
+        if(count == 0)
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DriverSection(school_: widget.school_, bus_: busModel)))
+                .then((value) => {getBusList(widget.school_.school_id)});
+          }
+        else
+          {
+            Constants.CurrentDriverData_reset();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Driver(school_: widget.school_, bus_: busModel)))
+                .then((value) => {getBusList(widget.school_.school_id)});
+          }
+
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),

@@ -7,6 +7,7 @@ import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../repository/userRep.dart';
+import '../driver/driverNotification.dart';
 import './signup.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -93,19 +94,20 @@ class _LoginScreenState extends State<LoginScreen> {
           // Constants.myName = Constants.userdata.fullName;
           // Constants.myEmail = Constants.userdata.email;
 
+
+
+          if(Constants.userdata.user_type == "DRIVER")
+          {
+
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                DriverNotification()), (Route<dynamic> route) => false);
+          }
+          else if(Constants.userdata.user_type == "PARENT")
+          {
+            // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            //     FoodieMainPage()), (Route<dynamic> route) => false);
+          }
           showSnackBar("Login Successfully");
-
-          // if(Constants.userdata.isChef)
-          // {
-          //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-          //       ChefMainPage()), (Route<dynamic> route) => false);
-          // }
-          // else
-          // {
-          //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-          //       FoodieMainPage()), (Route<dynamic> route) => false);
-          // }
-
 
         }).catchError((e) {
           showSnackBar(e.message);
