@@ -9,6 +9,7 @@ import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';
 import 'addBusScreen.dart';
+import 'driverSection.dart';
 
 class BusSection extends StatefulWidget{
   SchoolModel school_;
@@ -35,7 +36,7 @@ class _BusSectionState extends State<BusSection>{
   void initState() {
     super.initState();
     getBusList(widget.school_.school_id);
-    busCount = Constants.busList.length;
+
     print(widget.school_.name);
   }
 
@@ -52,6 +53,7 @@ class _BusSectionState extends State<BusSection>{
     Constants.busList.clear();
     setState(() {
       Constants.busList.addAll(busList);
+      busCount = busList.length;
       // print("$Constants.$schoolList.$length);
       loading = false;
     });
@@ -91,6 +93,7 @@ class _BusSectionState extends State<BusSection>{
                 schoolDetailSection(),
                 titleBusSection(),
                 BusListSection(),
+                deleteSchool(),
               ],
             ),
           ),
@@ -211,12 +214,12 @@ class _BusSectionState extends State<BusSection>{
     return ZoomTapAnimation(
       onTap: () {
         print("clicked");
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) =>
-        //             AddDishes(dish_: dishModel, index: index)))
-        //     .then((value) => {getDishList()});
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DriverSection(school_: widget.school_, bus_: busModel)))
+            .then((value) => {getBusList(widget.school_.school_id)});
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
@@ -268,5 +271,24 @@ class _BusSectionState extends State<BusSection>{
     );
   }
 
+  Widget deleteSchool(){
+    return Container(
+      width: Constants.width*0.8,
+      // color: ColorConstants.DeleteButtonColor,
+      margin: EdgeInsets.only(top: 10,bottom: 20),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: ColorConstants.DeleteButtonColor,
+          primary: Colors.white,
+          elevation: 10,
+        ),
+        child: Text("Delete School", style: TextStyle(fontSize: 20.0),),
+
+        onPressed: () {
+          print("delete school");
+        },
+      ),
+    );
+  }
 
 }

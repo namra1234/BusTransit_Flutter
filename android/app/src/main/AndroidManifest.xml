@@ -44,6 +44,17 @@
            android:value="AIzaSyAgpLONoQLPhvXWh05qs8cCBdmZS9NDolw"/>
 
 
-
     </application>
+<!--    <queries>-->
+<!--        &lt;!&ndash; If your app checks for SMS support &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.VIEW" />-->
+<!--            <data android:scheme="sms" />-->
+<!--        </intent>-->
+<!--        &lt;!&ndash; If your app checks for call support &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.VIEW" />-->
+<!--            <data android:scheme="tel" />-->
+<!--        </intent>-->
+<!--    </queries>-->
 </manifest>
