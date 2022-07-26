@@ -99,8 +99,16 @@ class _LoginScreenState extends State<LoginScreen> {
           if(Constants.userdata.user_type == "DRIVER")
           {
 
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                DriverNotification()), (Route<dynamic> route) => false);
+            if(Constants.userdata.bus_id != "")
+              {
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                    DriverNotification()), (Route<dynamic> route) => false);
+              }
+            else
+              {
+                showSnackBar("Please contact to Admin, to assign a bus to you");
+              }
+
           }
           else if(Constants.userdata.user_type == "PARENT")
           {

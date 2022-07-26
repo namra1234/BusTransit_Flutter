@@ -302,9 +302,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                         labelText: "Enter Phone No",
                                       ),
                                       validator: (value) {
+                                        String phonePattern =
+                                            '^\d{3}-\d{3}-\d{4}\$';
+                                        RegExp regExp =
+                                        RegExp(phonePattern);
                                         if (value!.isEmpty) {
                                           return "Field can not be empty";
                                         }
+                                          // else if (!regExp.hasMatch(value)) {
+                                        //   return "invalid format [ 514-xxx-xx66 ]";
+                                        // }
 
                                         return null;
                                       },
@@ -450,7 +457,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                                       validator: (value) {
                                         String passwordPattern =
-                                            '((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+=])(?=\\S+).{4,})';
+                                            '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}\$';
                                         RegExp regExp =
                                         RegExp(passwordPattern);
                                         if (value!.isEmpty) {
