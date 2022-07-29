@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ColorConstants {
   static final secondaryColor = Color(0xFFFFD100).withOpacity(0.5);
   static const primaryColor = Color(0xFFFFD100);
+  static const bottomBarIconColor = Color(0xFF67550a);
   static const dartPrimaryColor = Color(0xFFD05B07);
   static const thirdSecondaryColor = Color(0xFFFFDD2C);
   static const inactiveColor = Color(0xFFF3F2E7);

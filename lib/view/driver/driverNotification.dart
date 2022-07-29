@@ -49,12 +49,6 @@ class _DriverNotificationState extends State<DriverNotification>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Notification Section",textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20,fontWeight: FontWeight.bold
-        ),
-      ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

@@ -3,6 +3,7 @@ import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
 import 'package:school_bus_transit/view/admin/dashBoard.dart';
+import 'package:school_bus_transit/view/driver/driverMainScreen.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if(Constants.userdata.bus_id != "")
               {
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                    DriverNotification()), (Route<dynamic> route) => false);
+                    DriverMainPage()), (Route<dynamic> route) => false);
               }
             else
               {
