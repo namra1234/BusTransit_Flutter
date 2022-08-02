@@ -53,7 +53,6 @@ class BusRepository{
     return busList;
   }
 
-
   dynamic addNewBus(Map<String, dynamic> busModel) async {
 
     try{
@@ -101,6 +100,7 @@ class BusRepository{
       Constants.singleBusData =BusModel.fromMap(BusMap as Map<String,dynamic>);
       return BusMap;
     });
+    return Constants.singleBusData;
   }
 
   dynamic updateBus(Map<String, Object?> busModel,String? docId) async{
@@ -138,7 +138,8 @@ class BusRepository{
     }
   }
 
-
-
+  getBus(String busId) async {
+    return collection.doc(busId).snapshots();
+  }
 
 }

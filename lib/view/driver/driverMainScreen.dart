@@ -1,10 +1,19 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:school_bus_transit/view/driver/DriverHomeScreen.dart';
+import '../../common/buttonStyle.dart';
+import '../../common/constants.dart';
+import '../../common/textStyle.dart';
+import '../../model/busModel.dart';
+import '../../repository/busRep.dart';
 import './driverNotification.dart';
 
 import '../../common/colorConstants.dart';
@@ -17,12 +26,25 @@ class DriverMainPage extends StatefulWidget {
 class _DriverMainPageState extends State<DriverMainPage>
     with WidgetsBindingObserver {
   late int currentIndex;
+
+  late BusModel busdata;
+  // static final CameraPosition _kLake = CameraPosition(
+  //     bearing: 192.8334901395799,
+  //     target: LatLng(37.43296265331129, -122.08832357078792),
+  //     tilt: 59.440717697143555,
+  //     zoom: 19.151926040649414);
+
   @override
   void initState() {
+    getBusInfo();
     currentIndex = 1;
     super.initState();
   }
-
+  getBusInfo() async {
+    busdata = await BusRepository().getBusInfo(Constants.userdata.bus_id);
+    print("busdata" + busdata.bus_id);
+    setState(() {    });
+  }
   @override
   void dispose() {
     super.dispose();
@@ -44,7 +66,10 @@ class _DriverMainPageState extends State<DriverMainPage>
 
   @override
   Widget build(BuildContext context) {
+    Constants.height = MediaQuery.of(context).size.height;
+    Constants.width = MediaQuery.of(context).size.width;
     // TODO: implement build
+
     return Scaffold(
       bottomNavigationBar: BottomBar(),
       appBar: AppBar(
@@ -61,14 +86,7 @@ class _DriverMainPageState extends State<DriverMainPage>
         centerTitle: false,
       ),
       body: currentIndex == 1
-          ? Column(
-              children: [
-                Expanded(
-                    child: Container(
-                  child: Text('Home Page'),
-                ))
-              ],
-            )
+          ? DriverHomePage()
           : currentIndex == 0 ? DriverNotification()
           : Column(
             children: [
@@ -133,4 +151,20 @@ class _DriverMainPageState extends State<DriverMainPage>
       ],
     );
   }
+  Widget NoBusScreen(){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/images/second_logo.png"
+              , height: 100,width: 100),
+          SizedBox(height: 20),
+          Text("Admin Have not Assigned Bus To You ",
+            style: CustomTextStyle.mediumText(20, Constants.width)
+                .apply(fontStyle: FontStyle.italic))
+        ],
+      )
+    );
+  }
+
 }

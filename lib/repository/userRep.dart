@@ -37,7 +37,7 @@ class UserRepository {
 
       Map? UserMap =  UserModel(user_id,email_id,fullName,address,photo_url,phone_no,user_type,bus_id,gender,user_lat,user_long,school_id).toJson();
 
-      Constants.userdata=UserModel.fromMap(UserMap as Map<String,dynamic>);
+      Constants.userdata = UserModel.fromMap(UserMap as Map<String,dynamic>);
       return UserMap;
 
     });

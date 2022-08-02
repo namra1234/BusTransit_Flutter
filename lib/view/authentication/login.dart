@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
+import 'package:school_bus_transit/repository/busRep.dart';
 import 'package:school_bus_transit/view/admin/dashBoard.dart';
 import 'package:school_bus_transit/view/driver/driverMainScreen.dart';
 import '../../common/constants.dart';
@@ -41,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    emailController.text = "milan@gmail.com";
+    passwordController.text = "123456";
   }
 
   @override
@@ -71,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
         {
           Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
           await UserRepository().getUser(Constants.loggedInUserID);
-
+          await BusRepository().getBusInfo(Constants.userdata.bus_id);
           //
           SharedPreferences preferences = await SharedPreferences.getInstance();
           preferences.setBool('isLoggedin', true);
@@ -237,7 +240,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-
                       Center(
                         child: Text(
                           "Or Sign in with", style: TextStyle(
