@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:school_bus_transit/model/schoolModel.dart';
 import 'package:school_bus_transit/repository/driverRep.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -12,11 +11,7 @@ import '../../common/colorConstants.dart';
 import '../../common/constants.dart';
 import '../../model/busModel.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../../model/userModel.dart';
-import '../../repository/busRep.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 class Driver extends StatefulWidget {
   SchoolModel school_;
@@ -93,8 +88,6 @@ class _DriverState extends State<Driver> {
           position: LatLng(double.parse(busDetails["current_lat"]),
               double.parse(busDetails["current_long"])));
     }
-
-
   }
 
   getPolyPoints() async {
