@@ -5,6 +5,7 @@ import 'package:school_bus_transit/common/textStyle.dart';
 import 'package:school_bus_transit/repository/busRep.dart';
 import 'package:school_bus_transit/view/admin/dashBoard.dart';
 import 'package:school_bus_transit/view/driver/driverMainScreen.dart';
+import 'package:school_bus_transit/view/parents/parentHomeScreen.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    emailController.text = "milan@gmail.com";
-    passwordController.text = "123456";
+    // emailController.text = "milan@gmail.com";
+    // passwordController.text = "123456";
   }
 
   @override
@@ -74,8 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
         {
           Constants.loggedInUserID = FirebaseAuth.instance.currentUser!.uid;
           await UserRepository().getUser(Constants.loggedInUserID);
-          await BusRepository().getBusInfo(Constants.userdata.bus_id);
-          //
+
           SharedPreferences preferences = await SharedPreferences.getInstance();
           preferences.setBool('isLoggedin', true);
 
@@ -94,7 +94,6 @@ class _LoginScreenState extends State<LoginScreen> {
           preferences.setString('bus_id', Constants.userdata.bus_id);
 
 
-          //
           // Constants.myName = Constants.userdata.fullName;
           // Constants.myEmail = Constants.userdata.email;
 
@@ -105,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             if(Constants.userdata.bus_id != "")
               {
+                await BusRepository().getBusInfo(Constants.userdata.bus_id);
                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                     DriverMainPage()), (Route<dynamic> route) => false);
               }
@@ -116,8 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
           }
           else if(Constants.userdata.user_type == "PARENT")
           {
-            // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            //     FoodieMainPage()), (Route<dynamic> route) => false);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                parentHomeScreen()), (Route<dynamic> route) => false);
           }
           showSnackBar("Login Successfully");
 
