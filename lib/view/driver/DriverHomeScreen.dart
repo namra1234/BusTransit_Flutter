@@ -30,11 +30,12 @@ class _DriverHomePageState extends State<DriverHomePage>
   static late Marker _sourceMarker;
   static late Marker _destMarker;
   static late Marker _currentMarker;
+  bool fromPoly = false;
   late Stream busSnapShot;
   List<LatLng> polylineCoordinates = [];
   late BitmapDescriptor currentLocIcon;
   late Map<dynamic, dynamic> busDetails;
-  bool fromPoly = false;
+
   DateTime? now = null;
 
   @override
