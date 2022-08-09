@@ -46,7 +46,7 @@ class _ParentNotificationState extends State<ParentNotification> {
             children: <Widget>[
 
               SizedBox(
-                height: Constants.height*0.90,
+                height: Constants.height*0.80,
                 child: ListView.builder(
                     itemCount: _notifications.length,
                     itemBuilder: (context, index) {

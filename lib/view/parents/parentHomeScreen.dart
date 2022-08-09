@@ -2,6 +2,8 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/util.dart';
 import 'package:school_bus_transit/repository/busRep.dart';
+import 'package:school_bus_transit/view/parents/ParentProfile.dart';
+import 'package:school_bus_transit/view/parents/parentNotification.dart';
 import 'package:school_bus_transit/widget/BottomBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common/colorConstants.dart';
@@ -96,22 +98,8 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
           ),
         ),
       )
-          : currentIndex == 0 ? Column(
-        children: [
-          Expanded(
-              child: Container(
-                child: Text('Notification'),
-              ))
-        ],
-      )
-          : Column(
-        children: [
-          Expanded(
-              child: Container(
-                child: Text('Profile'),
-              ))
-        ],
-      ),
+          : currentIndex == 0 ? ParentNotification()
+          : ParentProfile(),
     );
   }
 
