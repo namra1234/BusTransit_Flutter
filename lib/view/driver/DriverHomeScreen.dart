@@ -5,17 +5,17 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:location/location.dart';
 import '../../common/buttonStyle.dart';
 import '../../common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';
 import './driverNotification.dart';
-
 import '../../common/colorConstants.dart';
 
 class DriverHomePage extends StatefulWidget {
@@ -30,12 +30,13 @@ class _DriverHomePageState extends State<DriverHomePage>
   static late Marker _sourceMarker;
   static late Marker _destMarker;
   static late Marker _currentMarker;
+  bool fromPoly = false;
   late Stream busSnapShot;
   List<LatLng> polylineCoordinates = [];
   late BitmapDescriptor currentLocIcon;
   late Map<dynamic, dynamic> busDetails;
-  bool fromPoly = false;
   DateTime? now = null;
+  bool sendLocation = false;
 
   @override
   void initState() {
@@ -121,6 +122,38 @@ class _DriverHomePageState extends State<DriverHomePage>
     );
   }
 
+  void sendCurrentData() async
+  {
+
+    if(sendLocation)
+      {
+        Position position = await Geolocator.getCurrentPosition();
+        print(position);
+
+        Map<String,dynamic> bus_info = new Map<String,dynamic>();
+        bus_info.putIfAbsent("current_lat", () => position.latitude.toString());
+        bus_info.putIfAbsent("current_long", () => position.longitude.toString());
+
+        await BusRepository().updateBus(
+            bus_info,Constants.userdata.bus_id);
+
+        sendCurrentData();
+      }
+
+  }
+
+  void startLocationSharing()
+  {
+    sendLocation = true;
+    sendCurrentData();
+  }
+
+  void stopLocationSharing()
+  {
+    sendLocation = false;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Constants.height = MediaQuery.of(context).size.height;
@@ -189,7 +222,7 @@ class _DriverHomePageState extends State<DriverHomePage>
                         ColorConstants.primaryColor,
                         ColorConstants.blackColor,
                         "Trip From School",
-                        () => {},
+                        startLocationSharing,
                         context),
                     SizedBox(height: 20),
                     centerButton(
@@ -199,7 +232,7 @@ class _DriverHomePageState extends State<DriverHomePage>
                         ColorConstants.primaryColor,
                         ColorConstants.blackColor,
                         "Trip To School",
-                        () => {},
+                        startLocationSharing,
                         context),
                     SizedBox(height: 20),
                     centerButton(
@@ -209,7 +242,7 @@ class _DriverHomePageState extends State<DriverHomePage>
                         ColorConstants.primaryColor,
                         ColorConstants.blackColor,
                         "Stop Trip",
-                        () => {},
+                        stopLocationSharing,
                         context),
                     SizedBox(height: 20),
                   ],
