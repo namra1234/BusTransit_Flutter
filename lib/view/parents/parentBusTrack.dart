@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -10,6 +11,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../common/buttonStyle.dart';
 import '../../common/constants.dart';
 import '../../common/colorConstants.dart';
+import 'dart:math' show cos, sqrt, asin;
+
+import 'DriverProfilePage.dart';
 
 class parentBusTrack extends StatefulWidget {
    String bus_id;
@@ -35,6 +39,8 @@ class _parentBusTrackState extends State<parentBusTrack>
   bool fromPoly = false;
   DateTime? now = null;
   String bus_id = "";
+  String distanceTOreachDestination = "";
+  String timeTOreachDestination = "";
 
   @override
   void initState() {
@@ -72,6 +78,36 @@ class _parentBusTrackState extends State<parentBusTrack>
     }
 
 
+  }
+
+  double calculateDistance(double lat1,double lon1,double lat2,double lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  void getDriverInfo()
+  {
+
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            DriverProfilePage(bus_id: bus_id,)
+    ));
+
+  }
+
+  void getTime(double lat1,double lon1,double lat2,double lon2) async
+  {
+    Dio dio = new Dio();
+    Response response=await dio.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+lat1.toString()+","+lon1.toString()+"&destinations="+lat2.toString()+","+lon2.toString()+"&key="+Constants.API_KEY);
+    print(response.data);
+
+
+    distanceTOreachDestination = response.data["rows"][0]["elements"][0]["distance"]["text"];
+    timeTOreachDestination = response.data["rows"][0]["elements"][0]["duration"]["text"];
   }
 
   getPolyPoints() async {
@@ -127,7 +163,7 @@ class _parentBusTrackState extends State<parentBusTrack>
           print("hello");
           if (snapshot.hasData) {
             busDetails = snapshot.data.data();
-
+            getTime(double.parse(busDetails["current_lat"]),double.parse(busDetails["current_long"]), double.parse(busDetails["destination_lat"]),double.parse(busDetails["destination_long"]));
             if(now==null) {
               now = DateTime.now();
               getPolyPoints();
@@ -191,23 +227,31 @@ class _parentBusTrackState extends State<parentBusTrack>
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:20),
-                          child: Text("Time to get Destination : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                          child: Text("Distance to reach Destination : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:10),
-                          child: Text("35 Minutes",style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
+                          child: Text(distanceTOreachDestination,style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:20),
-                          child: Text("Driver Name : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                          child: Text("Time to reach Destination : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:10),
-                          child: Text("35 Minutes",style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
+                          child: Text(timeTOreachDestination,style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top:30),
-                          child: Text("Get Driver Info. ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                          child: centerButton(
+                              Constants.height / 14,
+                              Constants.width * 0.50,
+                              Constants.width * 0.10,
+                              ColorConstants.primaryColor,
+                              ColorConstants.blackColor,
+                              "Get Driver Info.",
+                              getDriverInfo,
+                              context),
                         ),
                       ],
                     )

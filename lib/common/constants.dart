@@ -11,6 +11,7 @@ class Constants {
   static final String API_KEY = "AIzaSyAgpLONoQLPhvXWh05qs8cCBdmZS9NDolw";
   static String loggedInUserID = "";
   static UserModel userdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
+  static UserModel selectedDriverByParentdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
   static List<UserModel> driverdataTemp = [];
   static List<parentScreenModel> parentScreenData = [];
   static List<SchoolModel> schoolList=[];

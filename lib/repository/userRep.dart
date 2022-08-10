@@ -43,7 +43,39 @@ class UserRepository {
     });
   }
 
-  dynamic getDriver(List<String> user_id) async {
+  dynamic getDriver(String bus_id) async {
+
+    final docSnapshot = await collection
+        .where("bus_id", isEqualTo: bus_id)
+        .get()
+        .then((var snapshot) async {
+      final newDocRef = collection.doc();
+
+      // dynamic d1=snapshot.docs[0].data();
+      Map<String, dynamic>? data=snapshot.docs[0].data() as Map<String, dynamic>?;
+      String? user_id = data!["user_id"].toString();
+      String email_id = data['email_id'].toString();
+      String phone_no = data['phone_no'].toString();
+      String address = data['address'].toString();
+      String user_type = data['user_type'].toString();
+      String gender = data['gender'].toString();
+
+      String fullName = data['fullName'].toString();
+      String user_lat = data['user_lat'].toString();
+      String user_long = data['user_long'].toString();
+      String photo_url = data['photo_url'].toString();
+      String bus_id = data['bus_id'].toString();
+      List<dynamic> school_id = data['school_id'] as List<dynamic>;
+
+      Map? UserMap =  UserModel(user_id,email_id,fullName,address,photo_url,phone_no,user_type,bus_id,gender,user_lat,user_long,school_id).toJson();
+
+      Constants.selectedDriverByParentdata = UserModel.fromMap(UserMap as Map<String,dynamic>);
+      return UserMap;
+
+    });
+  }
+
+  dynamic getAllDriver(List<String> user_id) async {
 
     print(user_id);
     List<UserModel> driverList=[];

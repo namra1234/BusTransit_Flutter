@@ -113,7 +113,7 @@ class BusRepository{
 
     });
 
-    await UserRepository().getDriver(bus_idList);
+    await UserRepository().getAllDriver(bus_idList);
 
 
     for(int i=0;i<busList.length;i++)

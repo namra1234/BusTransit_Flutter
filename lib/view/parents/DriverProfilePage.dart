@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:school_bus_transit/repository/userRep.dart';
 
 import '../../common/buttonStyle.dart';
 import '../../common/colorConstants.dart';
@@ -23,7 +24,8 @@ GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 
 class DriverProfilePage extends StatefulWidget {
-  const DriverProfilePage({Key? key}) : super(key: key);
+  final String bus_id;
+   DriverProfilePage({Key? key,required this.bus_id}) : super(key: key);
 
   @override
   State<DriverProfilePage> createState() => _DriverProfilePageState();
@@ -51,19 +53,32 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   UserType? _userType = UserType.PARENT;
-  Gender? gender = Gender.male;
+  String gender = "";
   final Geolocator geolocator = Geolocator();
 
   @override
   void initState() {
     super.initState();
-
+    getData();
     emailController = TextEditingController();
     fullNameController = TextEditingController();
     addressController = TextEditingController();
     postalCodeController = TextEditingController();
     phoneNoController = TextEditingController();
 
+  }
+
+  void getData() async
+  {
+    await new UserRepository().getDriver(widget.bus_id);
+    emailController.text = Constants.selectedDriverByParentdata.email_id;
+    fullNameController.text = Constants.selectedDriverByParentdata.fullName;
+    phoneNoController.text = Constants.selectedDriverByParentdata.phone_no;
+    uploadedFileURL=Constants.selectedDriverByParentdata.photo_url;
+    gender = Constants.selectedDriverByParentdata.gender;
+    setState(() {
+
+    });
   }
 
   @override
@@ -86,6 +101,19 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
      Constants.width = MediaQuery.of(context).size.width;
 
      return Scaffold(
+       appBar: AppBar(
+         backgroundColor: ColorConstants.primaryColor,
+         title: Row(
+           children: [
+             Padding(
+               padding: EdgeInsets.all(5.0),
+               child: Text("Driver Profile"),
+             )
+           ],
+         ),
+         elevation: 0.0,
+         centerTitle: false,
+       ),
       body: SafeArea(
         child: Stack(
              children: [
@@ -157,12 +185,13 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                                  child: Column(
                                    children: [
                                      TextFormField(
+                                       enabled: false,
                                        controller: emailController,
                                        decoration: const InputDecoration(
                                          labelStyle:
                                          TextStyle(color: Colors.black),
                                          hintText: "Email",
-                                         labelText: "Enter Email",
+                                         labelText: "Email",
                                        ),
                                        validator: (value) {
                                          String emailPattern =
@@ -184,11 +213,12 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                                      ),
                                      TextFormField(
                                        controller: fullNameController,
+                                       enabled: false,
                                        decoration: const InputDecoration(
                                          labelStyle:
                                          TextStyle(color: Colors.black),
                                          hintText: "Fullname",
-                                         labelText: "Enter Fullname",
+                                         labelText: "Fullname",
                                        ),
                                        validator: (value) {
                                          if (value!.isEmpty) {
@@ -198,37 +228,40 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                                          return null;
                                        },
                                      ),
-                                     InkWell(
-                                       child: TextFormField(
-                                         readOnly: true,
-                                         controller: addressController,
-                                         decoration:  InputDecoration(
-                                           labelStyle:
-                                           const TextStyle(color: Colors.black),
-                                           hintText: "Address",
-                                           labelText: "Enter Address",
-                                           suffixIcon:  InkWell(
-                                             child: Icon(
-                                               Icons.my_location,
-                                               color: ColorConstants.blackColor,
-                                             ),
-                                           ),
-                                         ),
-                                         validator: (value) {
-                                           if (value!.isEmpty) {
-                                             return "Field can not be empty";
-                                           }
-                                           return null;
-                                         },
-                                       ),
-                                     ),
+                                     // InkWell(
+                                     //   child: TextFormField(
+                                     //     readOnly: true,
+                                     //     controller: addressController,
+                                     //     decoration:  InputDecoration(
+                                     //       labelStyle:
+                                     //       const TextStyle(color: Colors.black),
+                                     //       enabled: false,
+                                     //       hintText: "Address",
+                                     //       labelText: "Address",
+                                     //       suffixIcon:  InkWell(
+                                     //         child: Icon(
+                                     //           Icons.my_location,
+                                     //           color: ColorConstants.blackColor,
+                                     //         ),
+                                     //       ),
+                                     //     ),
+                                     //     validator: (value) {
+                                     //       if (value!.isEmpty) {
+                                     //         return "Field can not be empty";
+                                     //       }
+                                     //       return null;
+                                     //     },
+                                     //   ),
+                                     // ),
                                      TextFormField(
                                        controller: phoneNoController,
+                                       enabled: false,
                                        decoration: const InputDecoration(
                                          labelStyle:
                                          TextStyle(color: Colors.black),
+                                         enabled: false,
                                          hintText: "Phone No",
-                                         labelText: "Enter Phone No",
+                                         labelText: "Phone No",
                                        ),
                                        validator: (value) {
                                          String phonePattern =
@@ -256,69 +289,18 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                                              fontSize: 17, color: Colors.black),
                                        ),
                                      ),
-                                     Container(
-                                       child: Row(
-                                         children: <Widget>[
-                                           Container(
-                                             width:Constants.width/3.25,
-                                             child: Expanded(
-                                               child: RadioListTile<Gender>(
-                                                 contentPadding: EdgeInsets.only( // Add this
-                                                     left: 0,
-                                                     right: 0,
-                                                     bottom: 0,
-                                                     top: 0
-                                                 ),
-                                                 title:  Align(
-                                                     alignment: Alignment(-2.1, 0),
-                                                     child: Text('Male')),
-                                                 value: Gender.male,
-                                                 groupValue: gender,
-                                                 onChanged: (Gender? value) {
-                                                   setState(() {
-                                                     gender = value;
-                                                   });
-                                                 },
-                                               ),
-                                             ),
-                                           ),
-                                           Expanded(
-                                             child: RadioListTile<Gender>(
-                                               contentPadding: EdgeInsets.only( // Add this
-                                                   left: 0,
-                                                   right: 0,
-                                                   bottom: 0,
-                                                   top: 0
-                                               ),
-                                               title:  Align(
-                                                   alignment: Alignment(-1.3, 0),
-                                                   child: Text('Female')),
-                                               value: Gender.female,
-                                               groupValue: gender,
-                                               onChanged: (Gender? value) {
-                                                 setState(() {
-                                                   gender = value;
-                                                 });
-                                               },
-                                             ),
-                                           ),
-                                         ],
+                                     Padding(
+                                       padding:  EdgeInsets.only(top: 10),
+                                       child: Align(
+                                         alignment: Alignment.centerLeft,
+                                         child: Text(
+                                           gender,
+                                           style: TextStyle(
+                                               fontSize: 17, color: Colors.black),
+                                         ),
                                        ),
                                      ),
-                                     SizedBox(
-                                       height: 20,
-                                     ),
 
-                                     UserType.DRIVER == _userType ? DropDownMultiSelect (
-                                       onChanged: (List<String> x) {
-                                         setState(() {
-                                           selectedSchool =x;
-                                         });
-                                       },
-                                       options: allschool,
-                                       selectedValues: selectedSchool,
-                                       whenEmpty: 'Select School',
-                                     ): Container(),
                                    ],
                                  ),
                                ),
