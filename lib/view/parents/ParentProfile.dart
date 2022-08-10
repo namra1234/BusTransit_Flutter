@@ -110,6 +110,9 @@ class _ParentProfileState extends State<ParentProfile> {
               selectedSchool
           ),Constants.userdata.user_id
         );
+
+        showSnackBar("Profile Update Successfully");
+
       }
     }
   }

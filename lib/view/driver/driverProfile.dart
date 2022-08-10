@@ -43,8 +43,8 @@ class _DriverProfileState extends State<DriverProfile> {
   List<String> selectedSchool = [];
   bool uploadingImage=false;
   String uploadedFileURL = "";
-  double lattitude = 0;
-  double longitude = 0;
+  double lattitude = double.parse(Constants.userdata.user_lat);
+  double longitude = double.parse(Constants.userdata.user_long);
 
   String name = "";
   bool changeButton = false;
@@ -56,7 +56,7 @@ class _DriverProfileState extends State<DriverProfile> {
 
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-  UserType? _userType = UserType.PARENT;
+  UserType? _userType = UserType.DRIVER;
   Gender? gender = Gender.male;
   final Geolocator geolocator = Geolocator();
 
@@ -83,7 +83,35 @@ class _DriverProfileState extends State<DriverProfile> {
       else
       {
         FocusManager.instance.primaryFocus?.unfocus();
-        Save();
+        FocusManager.instance.primaryFocus?.unfocus();
+        String g="";
+        if(gender==Gender.male)
+        {
+          g="male";
+        }
+        else
+        {
+          g="female";
+        }
+
+        await UserRepository().updateUser(
+            UserModel(
+                Constants.userdata.user_id,
+                emailController.text,
+                fullNameController.text,
+                addressController.text,
+                uploadedFileURL,
+                phoneNoController.text,
+                "DRIVER",
+                Constants.userdata.bus_id,
+                g,
+                lattitude.toString(),
+                longitude.toString(),
+                []
+            ),Constants.userdata.user_id
+        );
+
+        showSnackBar("Profile Update Successfully");
       }
     }
   }
@@ -96,6 +124,12 @@ class _DriverProfileState extends State<DriverProfile> {
     addressController = TextEditingController();
     postalCodeController = TextEditingController();
     phoneNoController = TextEditingController();
+
+    emailController.text = Constants.userdata.email_id;
+    fullNameController.text = Constants.userdata.fullName;
+    addressController.text = Constants.userdata.address;
+    phoneNoController.text = Constants.userdata.phone_no;
+    uploadedFileURL = Constants.userdata.photo_url;
 
   }
 
@@ -194,6 +228,7 @@ class _DriverProfileState extends State<DriverProfile> {
                             child: Column(
                               children: [
                                 TextFormField(
+                                  enabled: false,
                                   controller: emailController,
                                   decoration: const InputDecoration(
                                     labelStyle:
@@ -358,29 +393,6 @@ class _DriverProfileState extends State<DriverProfile> {
                                 Container(
                                   child: Row(
                                     children: <Widget>[
-                                      Container(
-                                        width:Constants.width/3.25,
-                                        child: Expanded(
-                                          child: RadioListTile<UserType>(
-                                            contentPadding: EdgeInsets.only( // Add this
-                                                left: 0,
-                                                right: 0,
-                                                bottom: 0,
-                                                top: 0
-                                            ),
-                                            title:  Align(
-                                                alignment: Alignment(-4.1, 0),
-                                                child: Text('Parents')),
-                                            value: UserType.PARENT,
-                                            groupValue: _userType,
-                                            onChanged: (UserType? value) {
-                                              setState(() {
-                                                _userType = value;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
                                       Expanded(
                                         child: RadioListTile<UserType>(
                                           contentPadding: EdgeInsets.only( // Add this
@@ -390,7 +402,7 @@ class _DriverProfileState extends State<DriverProfile> {
                                               top: 0
                                           ),
                                           title:  Align(
-                                              alignment: Alignment(-1.3, 0),
+                                              alignment: Alignment(-1.2, 0),
                                               child: Text('Driver')),
                                           value: UserType.DRIVER,
                                           groupValue: _userType,
@@ -404,7 +416,7 @@ class _DriverProfileState extends State<DriverProfile> {
                                     ],
                                   ),
                                 ),
-                                UserType.DRIVER == _userType ? DropDownMultiSelect (
+                                UserType.DRIVER != _userType ? DropDownMultiSelect (
                                   onChanged: (List<String> x) {
                                     setState(() {
                                       selectedSchool =x;
