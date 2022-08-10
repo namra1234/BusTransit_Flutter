@@ -139,19 +139,19 @@ class UserRepository {
 
 
 
-  // Future<bool> updateUser(UserModel userModel,String? docId) async{
-  //   try{
-  //     final newDocRef = collection.doc(docId);
-  //     await newDocRef.update(userModel.toJson());
-  //     Constants.userdata = userModel;
-  //     return true;
-  //   }
-  //   catch(e){
-  //     return false;
-  //   }
-  // }
-  //
-  //
+  Future<bool> updateUser(UserModel userModel,String? docId) async{
+    try{
+      final newDocRef = collection.doc(docId);
+      await newDocRef.update(userModel.toJson());
+      Constants.userdata = userModel;
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
+
+
 
 
 }

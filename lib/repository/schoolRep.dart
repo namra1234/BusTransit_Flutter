@@ -27,6 +27,7 @@ class SchoolRepository{
         String? lat =       data!["lat"].toString();
         String? long =      data!["long"].toString();
 
+        Constants.allSchoolName.add(name);
         // print(name);
         Map? SchoolMap =  SchoolModel(school_id, name, email_id, phone_no,address,lat, long).toJson();
 
@@ -34,6 +35,8 @@ class SchoolRepository{
       }
 
     });
+
+
     //   print(" total length---------------->");
     // print(schoolList.length);
     //   print(" total length---------------->");

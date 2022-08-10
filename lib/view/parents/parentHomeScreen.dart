@@ -78,7 +78,7 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
           children: [
             Padding(
               padding: EdgeInsets.all(5.0),
-              child: Text("Welcome John"),
+              child: Text("Welcome "+Constants.userdata.fullName),
             )
           ],
         ),
