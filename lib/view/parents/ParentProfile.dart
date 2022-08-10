@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 
@@ -16,6 +17,8 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../model/userModel.dart';
+import '../../repository/userRep.dart';
 import '../authentication/signup.dart';
 
 
@@ -37,12 +40,12 @@ enum Gender { male, female }
 
 class _ParentProfileState extends State<ParentProfile> {
 
-  List<String> allschool = ['Cegep Gim','ISI','Concordia','Lasaale'];
+  List<String> allschool = Constants.allSchoolName;
   List<String> selectedSchool = [];
   bool uploadingImage=false;
   String uploadedFileURL = "";
-  double lattitude = 0;
-  double longitude = 0;
+  double lattitude = double.parse(Constants.userdata.user_lat);
+  double longitude = double.parse(Constants.userdata.user_long);
 
   String name = "";
   bool changeButton = false;
@@ -81,7 +84,32 @@ class _ParentProfileState extends State<ParentProfile> {
       else
       {
         FocusManager.instance.primaryFocus?.unfocus();
-        Save();
+        String g="";
+        if(gender==Gender.male)
+        {
+          g="male";
+        }
+        else
+        {
+          g="female";
+        }
+
+        await UserRepository().updateUser(
+          UserModel(
+              Constants.userdata.user_id,
+              emailController.text,
+              fullNameController.text,
+              addressController.text,
+              uploadedFileURL,
+              phoneNoController.text,
+              "PARENT",
+              "",
+              g,
+              lattitude.toString(),
+              longitude.toString(),
+              selectedSchool
+          ),Constants.userdata.user_id
+        );
       }
     }
   }
@@ -93,8 +121,19 @@ class _ParentProfileState extends State<ParentProfile> {
     emailController = TextEditingController();
     fullNameController = TextEditingController();
     addressController = TextEditingController();
-    postalCodeController = TextEditingController();
     phoneNoController = TextEditingController();
+
+    emailController.text = Constants.userdata.email_id;
+    fullNameController.text = Constants.userdata.fullName;
+    addressController.text = Constants.userdata.address;
+    phoneNoController.text = Constants.userdata.phone_no;
+    uploadedFileURL = Constants.userdata.photo_url;
+
+
+    Constants.userdata.school_id.forEach((element)
+    {
+      selectedSchool.add(element);
+    });
 
   }
   @override
@@ -104,7 +143,6 @@ class _ParentProfileState extends State<ParentProfile> {
     emailController.dispose();
     fullNameController.dispose();
     addressController.dispose();
-    postalCodeController.dispose();
     phoneNoController.dispose();
 
   }
@@ -191,6 +229,7 @@ class _ParentProfileState extends State<ParentProfile> {
                               children: [
                                 TextFormField(
                                   controller: emailController,
+                                  enabled: false,
                                   decoration: const InputDecoration(
                                     labelStyle:
                                     TextStyle(color: Colors.black),
@@ -376,31 +415,11 @@ class _ParentProfileState extends State<ParentProfile> {
                                             },
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: RadioListTile<UserType>(
-                                          contentPadding: EdgeInsets.only( // Add this
-                                              left: 0,
-                                              right: 0,
-                                              bottom: 0,
-                                              top: 0
-                                          ),
-                                          title:  Align(
-                                              alignment: Alignment(-1.3, 0),
-                                              child: Text('Driver')),
-                                          value: UserType.DRIVER,
-                                          groupValue: _userType,
-                                          onChanged: (UserType? value) {
-                                            setState(() {
-                                              _userType = value;
-                                            });
-                                          },
-                                        ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
-                                UserType.DRIVER == _userType ? DropDownMultiSelect (
+                                UserType.DRIVER != _userType ? DropDownMultiSelect (
                                   onChanged: (List<String> x) {
                                     setState(() {
                                       selectedSchool =x;

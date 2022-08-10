@@ -11,10 +11,12 @@ class Constants {
   static final String API_KEY = "AIzaSyAgpLONoQLPhvXWh05qs8cCBdmZS9NDolw";
   static String loggedInUserID = "";
   static UserModel userdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
+  static UserModel selectedDriverByParentdata = new UserModel('', '', '', '', '', '', '', '', '', '', '', []);
   static List<UserModel> driverdataTemp = [];
   static List<parentScreenModel> parentScreenData = [];
   static List<SchoolModel> schoolList=[];
   static List<BusModel> busList=[];
+  static List<String> allSchoolName=[];
 
   static BusModel singleBusData = new BusModel("", 0, "", false, false, "", "", "", "", "", "", "", "");
 

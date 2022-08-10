@@ -44,6 +44,63 @@ class NotificationRepository{
     return notificationList;
   }
 
+
+  Future<List<NotificationModel>> getAllBusNotification(List<dynamic> school_name) async {
+
+    print("----------------------------------------> call getAllBus");
+
+    List<NotificationModel> notificationList=[];
+
+    List<dynamic> school_id=[];
+
+
+    final docSnapshot = await FirebaseFirestore.instance.collection('School').where("name", whereIn: school_name)
+        .get()
+        .then((var snapshot)
+    async {
+      final newDocRef = collection.doc();
+
+      for(int i=0;i<snapshot.docs.length;i++)
+      {
+        Map<String, dynamic>? data=snapshot.docs[i].data() as Map<String, dynamic>?;
+        String? s_id       = data!["school_id"].toString();
+
+        school_id.add(s_id);
+      }
+
+    });
+
+    final docSnapshot1 = await collection.where("school_id", whereIn: school_id)
+        .get()
+        .then((var snapshot)
+    async {
+      final newDocRef = collection.doc();
+
+      for(int i=0;i<snapshot.docs.length;i++)
+      {
+        Map<String, dynamic>? data=snapshot.docs[i].data() as Map<String, dynamic>?;
+
+        String? notification_id  = data!["notification_id"].toString();
+        String? driver_id        = data!["driver_id"].toString();
+        String? bus_id           = data!["bus_id"].toString();
+        String? school_id        = data!["school_id"].toString();
+        String? title            = data!["title"].toString();
+        String? message          = data!["message"].toString();
+        DateTime timestamp      = data["timestamp"].toDate();
+
+        Map? NotificationMap =  NotificationModel(notification_id,driver_id,bus_id,school_id,title,message,timestamp).toJson();
+
+        notificationList.add(NotificationModel.fromMap(NotificationMap as Map<String,dynamic>));
+      }
+
+    });
+    //   print(" total length---------------->");
+    // print(schoolList.length);
+    //   print(" total length---------------->");
+    return notificationList;
+  }
+
+
   dynamic addNotification(Map<String, dynamic> notificationModel) async {
     try{
       final newDocRef = collection.doc();

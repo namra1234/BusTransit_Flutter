@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:school_bus_transit/repository/schoolRep.dart';
 import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/view/authentication/signup.dart';
 import '../common/buttonStyle.dart';
@@ -22,7 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    new SchoolRepository().getAllSchool();
     moveToNextScreen();
+
   }
 
   void moveToNextScreen() async {

@@ -43,7 +43,7 @@ enum Gender { male, female }
 
 class _SignupScreenState extends State<SignupScreen> {
 
-  List<String> allschool = ['Cegep Gim','ISI','Concordia','Lasaale'];
+  List<String> allschool = Constants.allSchoolName;
   List<String> selectedSchool = [];
   bool uploadingImage=false;
   String uploadedFileURL = "";
