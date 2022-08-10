@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,25 +7,21 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import '../../common/buttonStyle.dart';
 import '../../common/constants.dart';
-import '../../common/textStyle.dart';
-import '../../model/busModel.dart';
-import '../../repository/busRep.dart';
-import './driverNotification.dart';
-
 import '../../common/colorConstants.dart';
 
-class DriverHomePage extends StatefulWidget {
+class parentBusTrack extends StatefulWidget {
+   String bus_id;
+
+   parentBusTrack({Key? key, required this.bus_id})
+       : super(key: key);
+
   @override
-  _DriverHomePageState createState() => _DriverHomePageState();
+  _parentBusTrackState createState() => _parentBusTrackState();
 }
 
-class _DriverHomePageState extends State<DriverHomePage>
+class _parentBusTrackState extends State<parentBusTrack>
     with WidgetsBindingObserver {
   Completer<GoogleMapController> _controller = Completer();
   static late CameraPosition _kGooglePlex;
@@ -36,16 +34,13 @@ class _DriverHomePageState extends State<DriverHomePage>
   late Map<dynamic, dynamic> busDetails;
   bool fromPoly = false;
   DateTime? now = null;
+  String bus_id = "";
 
   @override
   void initState() {
     setCustomMarkerIcon();
-    // busSnapShot = BusRepository().getBus(Constants.userdata.bus_id);
-    // if (busDetails.values.length > 0) {
-    //   setMap();
-    // }
-
     super.initState();
+    this.bus_id = widget.bus_id;
   }
 
   void setMap() {
@@ -127,7 +122,7 @@ class _DriverHomePageState extends State<DriverHomePage>
     Constants.width = MediaQuery.of(context).size.width;
 
     return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('Bus').doc(Constants.userdata.bus_id).snapshots(),
+        stream: FirebaseFirestore.instance.collection('Bus').doc(bus_id).snapshots(),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
           print("hello");
           if (snapshot.hasData) {
@@ -148,13 +143,27 @@ class _DriverHomePageState extends State<DriverHomePage>
             }
 
             return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: ColorConstants.primaryColor,
+                  title: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Text("Welcome John"),
+                      )
+                    ],
+                  ),
+                  elevation: 0.0,
+                  centerTitle: false,
+                ),
                 body: SafeArea(
               child: Center(
                   child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Your are on trip from school",
+                    Text("Track location of you child",
                         style: TextStyle(fontSize: 20)),
                     Column(
                       children: [
@@ -179,39 +188,29 @@ class _DriverHomePageState extends State<DriverHomePage>
                               _controller.complete(controller);
                             },
                           ),
-                        )
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:20),
+                          child: Text("Time to get Destination : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:10),
+                          child: Text("35 Minutes",style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:20),
+                          child: Text("Driver Name : ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:10),
+                          child: Text("35 Minutes",style: TextStyle(fontSize: 12),textAlign: TextAlign.start),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:30),
+                          child: Text("Get Driver Info. ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.start),
+                        ),
                       ],
-                    ),
-                    centerButton(
-                        Constants.height / 18,
-                        Constants.width * 0.40,
-                        Constants.width * 0.08,
-                        ColorConstants.primaryColor,
-                        ColorConstants.blackColor,
-                        "Trip From School",
-                        () => {},
-                        context),
-                    SizedBox(height: 20),
-                    centerButton(
-                        Constants.height / 18,
-                        Constants.width * 0.40,
-                        Constants.width * 0.08,
-                        ColorConstants.primaryColor,
-                        ColorConstants.blackColor,
-                        "Trip To School",
-                        () => {},
-                        context),
-                    SizedBox(height: 20),
-                    centerButton(
-                        Constants.height / 18,
-                        Constants.width * 0.40,
-                        Constants.width * 0.08,
-                        ColorConstants.primaryColor,
-                        ColorConstants.blackColor,
-                        "Stop Trip",
-                        () => {},
-                        context),
-                    SizedBox(height: 20),
+                    )
                   ],
                 ),
               )),
