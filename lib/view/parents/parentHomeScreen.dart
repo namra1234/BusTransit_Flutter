@@ -2,6 +2,9 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/util.dart';
 import 'package:school_bus_transit/repository/busRep.dart';
+import 'package:school_bus_transit/view/parents/ParentProfile.dart';
+import 'package:school_bus_transit/view/parents/parentBusTrack.dart';
+import 'package:school_bus_transit/view/parents/parentNotification.dart';
 import 'package:school_bus_transit/widget/BottomBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common/colorConstants.dart';
@@ -96,22 +99,8 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
           ),
         ),
       )
-          : currentIndex == 0 ? Column(
-        children: [
-          Expanded(
-              child: Container(
-                child: Text('Notification'),
-              ))
-        ],
-      )
-          : Column(
-        children: [
-          Expanded(
-              child: Container(
-                child: Text('Profile'),
-              ))
-        ],
-      ),
+          : currentIndex == 0 ? ParentNotification()
+          : ParentProfile(),
     );
   }
 
@@ -185,7 +174,15 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
               padding: EdgeInsets.only(left:20,right: 20,top: 20),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: Container(
+                child: InkWell(
+                  onTap: ()
+                  {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            parentBusTrack(bus_id:Constants.parentScreenData[index].bus_id)
+                    ));
+                  },
+                child : Container(
                   decoration: BoxDecoration(
                     color: ColorConstants.primaryColor,
                   ),
@@ -252,7 +249,7 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
                         ),),
                     ],
                   ),
-                ),
+                )),
               ),
             );
           }),

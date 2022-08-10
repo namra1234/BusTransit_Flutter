@@ -9,12 +9,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:school_bus_transit/view/driver/DriverHomeScreen.dart';
+import 'package:school_bus_transit/view/driver/driverProfile.dart';
 import '../../common/buttonStyle.dart';
 import '../../common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';
 import './driverNotification.dart';
+import './driverProfile.dart';
 
 import '../../common/colorConstants.dart';
 
@@ -66,36 +68,38 @@ class _DriverMainPageState extends State<DriverMainPage>
 
   @override
   Widget build(BuildContext context) {
-    Constants.height = MediaQuery.of(context).size.height;
-    Constants.width = MediaQuery.of(context).size.width;
+    Constants.height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    Constants.width = MediaQuery
+        .of(context)
+        .size
+        .width;
     // TODO: implement build
 
     return Scaffold(
-      bottomNavigationBar: BottomBar(),
-      appBar: AppBar(
-        backgroundColor: ColorConstants.primaryColor,
-        title: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text("Welcome John"),
-            )
-          ],
-        ),
-        elevation: 0.0,
-        centerTitle: false,
-      ),
-      body: currentIndex == 1
-          ? DriverHomePage()
-          : currentIndex == 0 ? DriverNotification()
-          : Column(
+        bottomNavigationBar: BottomBar(),
+        appBar: AppBar(
+          backgroundColor: ColorConstants.primaryColor,
+          title: Row(
             children: [
-              Expanded(
-                  child: Container(
-                    child: Text('Profile'),
-                  ))
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Text("Welcome John"),
+              )
             ],
+          ),
+          elevation: 0.0,
+          centerTitle: false,
         ),
+        body: currentIndex == 1
+            ? DriverHomePage()
+            : currentIndex == 0
+            ? DriverNotification()
+            : currentIndex == 2
+            ? DriverProfile()
+            :Column()
     );
   }
 
