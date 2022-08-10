@@ -185,7 +185,7 @@ class _parentBusTrackState extends State<parentBusTrack>
                     children: [
                       Padding(
                         padding: EdgeInsets.all(5.0),
-                        child: Text("Welcome John"),
+                        child: Text("Driver Location"),
                       )
                     ],
                   ),

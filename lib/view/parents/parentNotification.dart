@@ -3,6 +3,10 @@ import 'dart:math';
 
 import 'package:school_bus_transit/common/constants.dart';
 
+import '../../common/colorConstants.dart';
+import '../../model/notificationModel.dart';
+import '../../repository/notificationRep.dart';
+
 class ParentNotification extends StatefulWidget {
 
   const ParentNotification({Key? key}) : super(key: key);
@@ -15,6 +19,8 @@ class _ParentNotificationState extends State<ParentNotification> {
 
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<NotificationModel> notificationData=[];
+  bool loading=true;
 
 
   final List _notifications = [
@@ -24,6 +30,22 @@ class _ParentNotificationState extends State<ParentNotification> {
     'Notification 17',
     'Notification 16'
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNotification();
+
+  }
+  void getNotification() async
+  {
+    notificationData=await new NotificationRepository().getAllBusNotification(Constants.userdata.school_id);
+
+    setState(() {
+      loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +69,25 @@ class _ParentNotificationState extends State<ParentNotification> {
 
               SizedBox(
                 height: Constants.height*0.80,
-                child: ListView.builder(
-                    itemCount: _notifications.length,
+                child: loading ?
+                Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.primaryColor,
+                  ),
+                ):
+
+                notificationData.length!=0 ?
+                ListView.builder(
+                    itemCount: notificationData.length,
                     itemBuilder: (context, index) {
-                      return titleSection();
+                      return titleSection(notificationData[index],index);
                     }
+                ):
+                Container(
+                  child:Center(child: Text("There is no notification.",
+                    style: TextStyle(
+                      fontSize: 20,fontWeight: FontWeight.bold
+                  ),))
                 ),
               ),
             ],
@@ -61,7 +97,9 @@ class _ParentNotificationState extends State<ParentNotification> {
     );
   }
 
-  Widget titleSection() {
+  Widget titleSection(NotificationModel notification , int index) {
+
+    int num = notificationData.length - index;
     return Padding(
       padding:  EdgeInsets.only(left:20,right:20,top:10),
       child: Container(
@@ -74,29 +112,35 @@ class _ParentNotificationState extends State<ParentNotification> {
                 height: 25,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text("Notification 20", style: TextStyle(
+                  children:  [
+                    Text("Notification "+num.toString(), style: TextStyle(
                         fontSize: 15.0, fontWeight: FontWeight.bold),),
-                    Text("2:35 pm", style: TextStyle(fontSize: 15.0),)
+                    Text(notification.timestamp.day.toString()+"-"
+                      +notification.timestamp.month.toString()+"-"
+                      +notification.timestamp.year.toString()+" "
+                        +notification.timestamp.hour.toString()+"-"
+                        +notification.timestamp.minute.toString()
+
+                      , style: TextStyle(fontSize: 15.0),)
                   ],
                 ),
               ),
               Container(
-
+width: Constants.width,
                 color: Colors.amber,
                 child: Column(
                   children: <Widget>[
                     SizedBox(height: 10,),
                     //controller: titleController,
-                    Text("Issues",
+                    Text(notification.title,
                       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),
                     ),
                     SizedBox(height: 10,),
                     Padding(
                       padding: EdgeInsets.only(left:10,right: 10,bottom: 10),
-                      child: Text("Due to Engine issues, We need to stop or bus at Sicard Rue. All students are safe . There will be 5 minutues to solve problem. We will solve it and we will move soon. Don’t worry about your childrens.",
+                      child: Text(notification.message,
                         style: TextStyle(fontSize: 15.0),),
-                    ),
+                    )
                   ],
                 ),
               ),

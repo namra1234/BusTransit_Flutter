@@ -16,6 +16,7 @@ class Constants {
   static List<parentScreenModel> parentScreenData = [];
   static List<SchoolModel> schoolList=[];
   static List<BusModel> busList=[];
+  static List<String> allSchoolName=[];
 
   static BusModel singleBusData = new BusModel("", 0, "", false, false, "", "", "", "", "", "", "", "");
 
