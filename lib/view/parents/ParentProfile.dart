@@ -138,6 +138,11 @@ class _ParentProfileState extends State<ParentProfile> {
       selectedSchool.add(element);
     });
 
+    if(Constants.userdata.gender.toLowerCase()=="female")
+    {
+      gender = Gender.female;
+    }
+
   }
   @override
   void dispose() {

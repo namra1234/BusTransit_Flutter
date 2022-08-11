@@ -131,6 +131,11 @@ class _DriverProfileState extends State<DriverProfile> {
     phoneNoController.text = Constants.userdata.phone_no;
     uploadedFileURL = Constants.userdata.photo_url;
 
+    if(Constants.userdata.gender.toLowerCase()=="female")
+    {
+      gender = Gender.female;
+    }
+
   }
 
   @override

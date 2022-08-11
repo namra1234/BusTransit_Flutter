@@ -86,7 +86,7 @@ class _DriverMainPageState extends State<DriverMainPage>
             children: [
               Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text("Welcome John"),
+                child: Text("Welcome "+Constants.userdata.fullName),
               )
             ],
           ),

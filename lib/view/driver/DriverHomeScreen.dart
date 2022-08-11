@@ -127,12 +127,29 @@ class _DriverHomePageState extends State<DriverHomePage>
 
     if(sendLocation)
       {
+        var location = Location();
+
+        if (!await location.serviceEnabled()) {
+          if (!await location.requestService()) {
+            return;
+          }
+        }
+
+        var permission = await location.hasPermission();
+        if (permission == PermissionStatus.denied) {
+          permission = await location.requestPermission();
+          if (permission != PermissionStatus.granted) {
+            return;
+          }
+        }
+
         Position position = await Geolocator.getCurrentPosition();
         print(position);
 
         Map<String,dynamic> bus_info = new Map<String,dynamic>();
         bus_info.putIfAbsent("current_lat", () => position.latitude.toString());
         bus_info.putIfAbsent("current_long", () => position.longitude.toString());
+        bus_info.putIfAbsent("active_sharing", () => true);
 
         await BusRepository().updateBus(
             bus_info,Constants.userdata.bus_id);
@@ -148,9 +165,14 @@ class _DriverHomePageState extends State<DriverHomePage>
     sendCurrentData();
   }
 
-  void stopLocationSharing()
+  void stopLocationSharing() async
   {
     sendLocation = false;
+    Map<String,dynamic> bus_info = new Map<String,dynamic>();
+    bus_info.putIfAbsent("active_sharing", () => false);
+
+    await BusRepository().updateBus(
+        bus_info,Constants.userdata.bus_id);
   }
 
 
