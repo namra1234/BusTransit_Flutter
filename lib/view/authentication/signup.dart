@@ -662,7 +662,7 @@ class _SignupScreenState extends State<SignupScreen> {
       }
       else
       {
-        u="female";
+        g="female";
       }
 
       await UserRepository().createUser(
