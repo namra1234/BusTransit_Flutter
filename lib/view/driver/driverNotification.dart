@@ -171,8 +171,8 @@ class _DriverNotificationState extends State<DriverNotification>{
 
     NotificationModel newModel = NotificationModel(
         "No Notification Id",
-        Constants.CurrentDriverdata.user_id,
-        Constants.CurrentDriverdata.bus_id,
+        Constants.userdata.user_id,
+        Constants.userdata.bus_id,
         Constants.singleBusData.school_id,
         titleController.text.toString(),
         descriptionController.text.toString(),
