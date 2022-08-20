@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/view/driver/DriverHomeScreen.dart';
 import 'package:school_bus_transit/view/driver/driverProfile.dart';
 import '../../common/buttonStyle.dart';
@@ -59,6 +60,33 @@ class _DriverMainPageState extends State<DriverMainPage>
       ),
     );
   }
+  void _showDialog(){
+    showDialog(context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Sign out",),
+            content: Text("are you sure want to signout?",style:
+            TextStyle(fontSize: 18.0),),
+            actions: [
+              MaterialButton(
+                onPressed: (){
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                      builder: (context) =>
+                          LoginScreen()
+                  ),(Route<dynamic> route) => false);
+                },
+                child: Text("yes",style: TextStyle(fontSize: 15.0),),
+              ),
+              MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text("no",style: TextStyle(fontSize: 15.0),),
+              ),
+            ],
+          );
+        });
+  }
 
   changePage(int? index) {
     setState(() {
@@ -83,11 +111,19 @@ class _DriverMainPageState extends State<DriverMainPage>
         appBar: AppBar(
           backgroundColor: ColorConstants.primaryColor,
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Text("Welcome "+Constants.userdata.fullName),
-              )
+              ),
+              IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.black,
+                  ),
+                  onPressed: _showDialog
+              ),
             ],
           ),
           elevation: 0.0,
