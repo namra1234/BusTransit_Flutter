@@ -57,18 +57,37 @@ class _parentBusTrackState extends State<parentBusTrack>
         zoom: 14.0,
       );
 
-      _sourceMarker = Marker(
-          markerId: MarkerId("sourceId"),
-          infoWindow: InfoWindow(title: "Source"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(double.parse(busDetails["source_lat"]),
-              double.parse(busDetails["source_long"])));
-      _destMarker = Marker(
-          markerId: MarkerId("destId"),
-          infoWindow: InfoWindow(title: "Destination"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(double.parse(busDetails["destination_lat"]),
-              double.parse(busDetails["destination_long"])));
+      if(!busDetails["going_to_school"])
+      {
+        _sourceMarker = Marker(
+            markerId: MarkerId("sourceId"),
+            infoWindow: InfoWindow(title: "Source"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["source_lat"]),
+                double.parse(busDetails["source_long"])));
+        _destMarker = Marker(
+            markerId: MarkerId("destId"),
+            infoWindow: InfoWindow(title: "Destination"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["destination_lat"]),
+                double.parse(busDetails["destination_long"])));
+      }
+      else
+      {
+        _destMarker = Marker(
+            markerId: MarkerId("sourceId"),
+            infoWindow: InfoWindow(title: "Source"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["source_lat"]),
+                double.parse(busDetails["source_long"])));
+        _sourceMarker= Marker(
+            markerId: MarkerId("destId"),
+            infoWindow: InfoWindow(title: "Destination"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["destination_lat"]),
+                double.parse(busDetails["destination_long"])));
+      }
+
       _currentMarker = Marker(
           markerId: const MarkerId("currentId"),
           infoWindow: const InfoWindow(title: "Current Location"),

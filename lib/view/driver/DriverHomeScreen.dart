@@ -57,18 +57,37 @@ class _DriverHomePageState extends State<DriverHomePage>
         zoom: 14.0,
       );
 
-      _sourceMarker = Marker(
-          markerId: MarkerId("sourceId"),
-          infoWindow: InfoWindow(title: "Source"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(double.parse(busDetails["source_lat"]),
-              double.parse(busDetails["source_long"])));
-      _destMarker = Marker(
-          markerId: MarkerId("destId"),
-          infoWindow: InfoWindow(title: "Destination"),
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(double.parse(busDetails["destination_lat"]),
-              double.parse(busDetails["destination_long"])));
+      if(!busDetails["going_to_school"])
+        {
+          _sourceMarker = Marker(
+              markerId: MarkerId("sourceId"),
+              infoWindow: InfoWindow(title: "Source"),
+              icon: BitmapDescriptor.defaultMarker,
+              position: LatLng(double.parse(busDetails["source_lat"]),
+                  double.parse(busDetails["source_long"])));
+          _destMarker = Marker(
+              markerId: MarkerId("destId"),
+              infoWindow: InfoWindow(title: "Destination"),
+              icon: BitmapDescriptor.defaultMarker,
+              position: LatLng(double.parse(busDetails["destination_lat"]),
+                  double.parse(busDetails["destination_long"])));
+        }
+      else
+        {
+          _destMarker = Marker(
+              markerId: MarkerId("sourceId"),
+              infoWindow: InfoWindow(title: "Source"),
+              icon: BitmapDescriptor.defaultMarker,
+              position: LatLng(double.parse(busDetails["source_lat"]),
+                  double.parse(busDetails["source_long"])));
+          _sourceMarker= Marker(
+              markerId: MarkerId("destId"),
+              infoWindow: InfoWindow(title: "Destination"),
+              icon: BitmapDescriptor.defaultMarker,
+              position: LatLng(double.parse(busDetails["destination_lat"]),
+                  double.parse(busDetails["destination_long"])));
+        }
+
       _currentMarker = Marker(
           markerId: const MarkerId("currentId"),
           infoWindow: const InfoWindow(title: "Current Location"),
@@ -122,7 +141,7 @@ class _DriverHomePageState extends State<DriverHomePage>
     );
   }
 
-  void sendCurrentData() async
+  void sendCurrentToSchoolData() async
   {
 
     if(sendLocation)
@@ -150,19 +169,64 @@ class _DriverHomePageState extends State<DriverHomePage>
         bus_info.putIfAbsent("current_lat", () => position.latitude.toString());
         bus_info.putIfAbsent("current_long", () => position.longitude.toString());
         bus_info.putIfAbsent("active_sharing", () => true);
+        bus_info.putIfAbsent("going_to_school", () => true);
 
         await BusRepository().updateBus(
             bus_info,Constants.userdata.bus_id);
 
-        sendCurrentData();
+        sendCurrentToSchoolData();
       }
 
   }
 
-  void startLocationSharing()
+  void sendCurrentFromSchoolData() async
+  {
+
+    if(sendLocation)
+    {
+      var location = Location();
+
+      if (!await location.serviceEnabled()) {
+        if (!await location.requestService()) {
+          return;
+        }
+      }
+
+      var permission = await location.hasPermission();
+      if (permission == PermissionStatus.denied) {
+        permission = await location.requestPermission();
+        if (permission != PermissionStatus.granted) {
+          return;
+        }
+      }
+
+      Position position = await Geolocator.getCurrentPosition();
+      print(position);
+
+      Map<String,dynamic> bus_info = new Map<String,dynamic>();
+      bus_info.putIfAbsent("current_lat", () => position.latitude.toString());
+      bus_info.putIfAbsent("current_long", () => position.longitude.toString());
+      bus_info.putIfAbsent("active_sharing", () => true);
+      bus_info.putIfAbsent("going_to_school", () => false);
+
+      await BusRepository().updateBus(
+          bus_info,Constants.userdata.bus_id);
+
+      sendCurrentFromSchoolData();
+    }
+
+  }
+
+  void startLocationSharingToSchool()
   {
     sendLocation = true;
-    sendCurrentData();
+    sendCurrentToSchoolData();
+  }
+
+  void startLocationSharingFromSchool()
+  {
+    sendLocation = true;
+    sendCurrentFromSchoolData();
   }
 
   void stopLocationSharing() async
@@ -244,7 +308,7 @@ class _DriverHomePageState extends State<DriverHomePage>
                         ColorConstants.primaryColor,
                         ColorConstants.blackColor,
                         "Trip From School",
-                        startLocationSharing,
+                        startLocationSharingFromSchool,
                         context),
                     SizedBox(height: 20),
                     centerButton(
@@ -254,7 +318,7 @@ class _DriverHomePageState extends State<DriverHomePage>
                         ColorConstants.primaryColor,
                         ColorConstants.blackColor,
                         "Trip To School",
-                        startLocationSharing,
+                        startLocationSharingToSchool,
                         context),
                     SizedBox(height: 20),
                     centerButton(
