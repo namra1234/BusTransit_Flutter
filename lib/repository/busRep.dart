@@ -79,7 +79,7 @@ class BusRepository{
 
     });
 
-
+    Constants.school_id = school_id;
     final docSnapshot1 = await collection.where("school_id", whereIn: school_id)
         .get()
         .then((var snapshot)

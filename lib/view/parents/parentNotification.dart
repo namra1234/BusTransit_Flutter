@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:school_bus_transit/common/constants.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../common/colorConstants.dart';
 import '../../model/notificationModel.dart';
 import '../../repository/notificationRep.dart';
@@ -35,17 +35,9 @@ class _ParentNotificationState extends State<ParentNotification> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getNotification();
 
   }
-  void getNotification() async
-  {
-    notificationData=await new NotificationRepository().getAllBusNotification(Constants.userdata.school_id);
 
-    setState(() {
-      loading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,43 +50,65 @@ class _ParentNotificationState extends State<ParentNotification> {
         .size
         .width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+    return
+      StreamBuilder(
+          stream: FirebaseFirestore.instance.
+          collection('Notification').where("school_id", whereIn: Constants.school_id).snapshots(),
+          builder: (context, AsyncSnapshot<dynamic> snapshot) {
+            print("hello");
+            if (snapshot.hasData) {
 
-              SizedBox(
-                height: Constants.height*0.80,
-                child: loading ?
-                Center(
-                  child: CircularProgressIndicator(
-                    color: ColorConstants.primaryColor,
+              if(notificationData.length!=0)
+              notificationData.clear();
+              for(int i=0;i<snapshot.data.docs.length;i++)
+              {
+                Map<String, dynamic>? data=snapshot.data.docs[i].data() as Map<String, dynamic>?;
+
+                String? notification_id  = data!["notification_id"].toString();
+                String? driver_id        = data!["driver_id"].toString();
+                String? bus_id           = data!["bus_id"].toString();
+                String? school_id        = data!["school_id"].toString();
+                String? title            = data!["title"].toString();
+                String? message          = data!["message"].toString();
+                DateTime timestamp      = data["timestamp"].toDate();
+
+                Map? NotificationMap =  NotificationModel(notification_id,driver_id,bus_id,school_id,title,message,timestamp).toJson();
+
+                notificationData.add(NotificationModel.fromMap(NotificationMap as Map<String,dynamic>));
+              }
+
+
+              return Scaffold(
+                backgroundColor: Colors.white,
+                body: SafeArea(
+                  child: Form(
+                    key: _formKey,
+                    child: notificationData.length!=0 ?
+                    ListView.builder(
+                        itemCount: notificationData.length,
+                        itemBuilder: (context, index) {
+                          return titleSection(notificationData[index],index);
+                        }
+                    ):
+                    Container(
+                        child:Center(child: Text("There is no notification.",
+                          style: TextStyle(
+                              fontSize: 20,fontWeight: FontWeight.bold
+                          ),))
+                    ),
                   ),
-                ):
-
-                notificationData.length!=0 ?
-                ListView.builder(
-                    itemCount: notificationData.length,
-                    itemBuilder: (context, index) {
-                      return titleSection(notificationData[index],index);
-                    }
-                ):
-                Container(
-                  child:Center(child: Text("There is no notification.",
-                    style: TextStyle(
-                      fontSize: 20,fontWeight: FontWeight.bold
-                  ),))
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+              );
+            }
+            return Scaffold(
+                body: SafeArea(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: ColorConstants.primaryColor,
+                      ),
+                    )));
+          })
+      ;
   }
 
   Widget titleSection(NotificationModel notification , int index) {

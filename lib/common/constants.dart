@@ -17,6 +17,7 @@ class Constants {
   static List<SchoolModel> schoolList=[];
   static List<BusModel> busList=[];
   static List<String> allSchoolName=[];
+  static List<dynamic> school_id=[];
 
   static BusModel singleBusData = new BusModel("", 0, "", false, false, "", "", "", "", "", "", "", "");
 
