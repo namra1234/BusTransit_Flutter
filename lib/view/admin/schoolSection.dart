@@ -181,7 +181,4 @@ class _SchoolSectionState extends State<SchoolSection>{
     );
   }
 
-
-
-
 }

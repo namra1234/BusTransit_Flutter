@@ -79,7 +79,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) =>
                                         SchoolSection()
-                                ));
+                                )).then((value) => {
+                                getSchoolCount(),
+                                    getBusCount()
+                                });
 
                               },
                               child: Container(

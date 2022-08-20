@@ -70,6 +70,17 @@ class SchoolRepository{
   }
 
 
+  dynamic deleteSchool(String? bus_id) async{
+    try{
+      final newDocRef = collection.doc(bus_id);
+      await newDocRef.delete();
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
+
   dynamic SchoolCount() async {
 
     int count = 0;

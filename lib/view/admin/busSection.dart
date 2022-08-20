@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:school_bus_transit/model/schoolModel.dart';
 import 'package:school_bus_transit/model/userModel.dart';
+import 'package:school_bus_transit/repository/schoolRep.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../common/colorConstants.dart';
@@ -105,7 +106,7 @@ class _BusSectionState extends State<BusSection>{
                 schoolDetailSection(),
                 titleBusSection(),
                 BusListSection(),
-                deleteSchool(),
+                Constants.busList.length == 0 ? deleteSchool() : Container(),
               ],
             ),
           ),
@@ -312,8 +313,11 @@ class _BusSectionState extends State<BusSection>{
         ),
         child: Text("Delete School", style: TextStyle(fontSize: 20.0),),
 
-        onPressed: () {
-          print("delete school");
+        onPressed: () async
+        {
+          await new SchoolRepository().deleteSchool(widget.school_.school_id);
+          showSnackBar("Delete School Successfully");
+          Navigator.pop(context);
         },
       ),
     );
