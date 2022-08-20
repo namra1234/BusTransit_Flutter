@@ -2,6 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/util.dart';
 import 'package:school_bus_transit/repository/busRep.dart';
+import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/view/parents/ParentProfile.dart';
 import 'package:school_bus_transit/view/parents/parentBusTrack.dart';
 import 'package:school_bus_transit/view/parents/parentNotification.dart';
@@ -26,10 +27,39 @@ class parentHomeScreen extends StatefulWidget{
 class _parentHomeScreenState extends State<parentHomeScreen>{
 
 
+  void _showDialog(){
+    showDialog(context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Sign out",),
+            content: Text("are you sure want to signout?",style:
+            TextStyle(fontSize: 18.0),),
+            actions: [
+              MaterialButton(
+                  onPressed: (){
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                        builder: (context) =>
+                        LoginScreen()),(Route<dynamic> route) => false);
+                    },
+                child: Text("yes",style: TextStyle(fontSize: 15.0),),
+              ),
+              MaterialButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                    },
+                child: Text("no",style: TextStyle(fontSize: 15.0),),
+              ),
+            ],
+          );
+        });
+  }
+
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   late int currentIndex;
   bool loading =true;
+
+
 
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -75,12 +105,21 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
       appBar: AppBar(
         backgroundColor: ColorConstants.primaryColor,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text("Welcome "+Constants.userdata.fullName),
-            )
+            ),
+            IconButton(
+              icon: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+                onPressed: _showDialog
+            ),
           ],
+
         ),
         elevation: 0.0,
         centerTitle: false,
