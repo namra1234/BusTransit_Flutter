@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../common/colorConstants.dart';
 import '../../model/notificationModel.dart';
 import '../../repository/notificationRep.dart';
+import 'push_notification.dart';
 
 class ParentNotification extends StatefulWidget {
 
@@ -58,6 +59,10 @@ class _ParentNotificationState extends State<ParentNotification> {
             print("hello");
             if (snapshot.hasData) {
 
+              //local notification
+
+
+
               if(notificationData.length!=0)
               notificationData.clear();
               for(int i=0;i<snapshot.data.docs.length;i++)
@@ -77,6 +82,10 @@ class _ParentNotificationState extends State<ParentNotification> {
                 notificationData.add(NotificationModel.fromMap(NotificationMap as Map<String,dynamic>));
               }
 
+              notificationData.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+              NotificationService().showNotification(
+                  1, notificationData[notificationData.length-1].title, notificationData[notificationData.length-1].message);
 
               return Scaffold(
                 backgroundColor: Colors.white,
