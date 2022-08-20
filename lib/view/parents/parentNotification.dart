@@ -21,7 +21,8 @@ class _ParentNotificationState extends State<ParentNotification> {
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   List<NotificationModel> notificationData=[];
-  bool loading=true;
+  bool loading=true , firstTime = true;
+
 
 
   final List _notifications = [
@@ -84,9 +85,12 @@ class _ParentNotificationState extends State<ParentNotification> {
 
               notificationData.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-              NotificationService().showNotification(
-                  1, notificationData[notificationData.length-1].title, notificationData[notificationData.length-1].message);
-
+              if(!firstTime)
+                {
+                  NotificationService().showNotification(
+                      1, notificationData[notificationData.length-1].title, notificationData[notificationData.length-1].message);
+                }
+              firstTime = false;
               return Scaffold(
                 backgroundColor: Colors.white,
                 body: SafeArea(
