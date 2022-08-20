@@ -3,6 +3,7 @@ import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
 import 'package:school_bus_transit/view/admin/schoolSection.dart';
+import 'package:school_bus_transit/view/authentication/login.dart';
 import '../../common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,33 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     ),);
 
   }
-
+  void _showDialog(){
+    showDialog(context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Sign out",),
+            content: Text("are you sure want to signout?",style:
+            TextStyle(fontSize: 18.0),),
+            actions: [
+              MaterialButton(
+                onPressed: (){
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                      builder: (context) =>
+                          LoginScreen()
+                  ),(Route<dynamic> route) => false);
+                },
+                child: Text("yes",style: TextStyle(fontSize: 15.0),),
+              ),
+              MaterialButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text("no",style: TextStyle(fontSize: 15.0),),
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -197,8 +224,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
                 InkWell(
                   onTap: () {
-
-                    Navigator.pop(context);
+                    _showDialog();
                   },
                   child: Container(
                     child: Padding(
@@ -206,7 +232,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       child: AnimatedContainer(duration: Duration(seconds: 1),
                         alignment: Alignment.center,
                         height: 60,width: 350,
-                        child: Text("Logout",style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold,
+                        child: Text("Logout",
+                          style: TextStyle(fontSize: 40,color: Colors.white,fontWeight: FontWeight.bold,
                         ),
                         ),
                         decoration: BoxDecoration(
