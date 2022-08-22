@@ -12,7 +12,7 @@ import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/view/driver/DriverHomeScreen.dart';
 import 'package:school_bus_transit/view/driver/driverProfile.dart';
 import '../../common/buttonStyle.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';

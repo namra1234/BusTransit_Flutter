@@ -10,7 +10,7 @@ import 'package:map_address_picker/models/location_result.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 
 const kGoogleApiKey = "AIzaSyAgpLONoQLPhvXWh05qs8cCBdmZS9NDolw";
 final homeScaffoldKey = GlobalKey<ScaffoldState>();

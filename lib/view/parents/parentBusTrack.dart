@@ -8,8 +8,9 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/buttonStyle.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/colorConstants.dart';
 import 'dart:math' show cos, sqrt, asin;
 
@@ -61,31 +62,31 @@ class _parentBusTrackState extends State<parentBusTrack>
       {
         _sourceMarker = Marker(
             markerId: MarkerId("sourceId"),
-            infoWindow: InfoWindow(title: "Source"),
+            infoWindow: InfoWindow(title: "Source " +busDetails["source"]),
             icon: BitmapDescriptor.defaultMarker,
             position: LatLng(double.parse(busDetails["source_lat"]),
                 double.parse(busDetails["source_long"])));
         _destMarker = Marker(
             markerId: MarkerId("destId"),
-            infoWindow: InfoWindow(title: "Destination"),
+            infoWindow: InfoWindow(title: "Destination - "+Constants.userdata.address),
             icon: BitmapDescriptor.defaultMarker,
-            position: LatLng(double.parse(busDetails["destination_lat"]),
-                double.parse(busDetails["destination_long"])));
+            position: LatLng(double.parse(Constants.userdata.user_lat),
+                double.parse(Constants.userdata.user_long)));
       }
       else
       {
         _destMarker = Marker(
             markerId: MarkerId("sourceId"),
-            infoWindow: InfoWindow(title: "Source"),
+            infoWindow: InfoWindow(title: "Destination - "+busDetails["source"]),
             icon: BitmapDescriptor.defaultMarker,
             position: LatLng(double.parse(busDetails["source_lat"]),
                 double.parse(busDetails["source_long"])));
         _sourceMarker= Marker(
             markerId: MarkerId("destId"),
-            infoWindow: InfoWindow(title: "Destination"),
+            infoWindow: InfoWindow(title: "Source "+Constants.userdata.address),
             icon: BitmapDescriptor.defaultMarker,
-            position: LatLng(double.parse(busDetails["destination_lat"]),
-                double.parse(busDetails["destination_long"])));
+            position: LatLng(double.parse(Constants.userdata.user_lat),
+                double.parse(Constants.userdata.user_long)));
       }
 
       _currentMarker = Marker(
@@ -95,8 +96,42 @@ class _parentBusTrackState extends State<parentBusTrack>
           position: LatLng(double.parse(busDetails["current_lat"]),
               double.parse(busDetails["current_long"])));
     }
+  }
 
+  getPolyPoints() async {
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result;
+    if(!busDetails["going_to_school"])
+    {
+      result = await polylinePoints.getRouteBetweenCoordinates(
+          Constants.API_KEY,
+          PointLatLng(double.parse(busDetails["current_lat"]),
+              double.parse(busDetails["current_long"])),
+          PointLatLng(double.parse(Constants.userdata.user_lat),
+              double.parse(Constants.userdata.user_long)));
+    }
+    else
+    {
+      result = await polylinePoints.getRouteBetweenCoordinates(
+          Constants.API_KEY,
+          PointLatLng(double.parse(busDetails["current_lat"]),
+              double.parse(busDetails["current_long"])),
+          PointLatLng(double.parse(busDetails["source_lat"]),
+              double.parse(busDetails["source_long"])));
+    }
 
+    if (result.points.isNotEmpty) {
+      polylineCoordinates.clear();
+      result.points.forEach(
+            (PointLatLng point) =>
+            polylineCoordinates.add(LatLng(point.latitude, point.longitude)),
+      );
+    }
+    print("Call infinite");
+
+    setState(() {
+      fromPoly=true;
+    });
   }
 
   double calculateDistance(double lat1,double lon1,double lat2,double lon2){
@@ -127,29 +162,11 @@ class _parentBusTrackState extends State<parentBusTrack>
 
     distanceTOreachDestination = response.data["rows"][0]["elements"][0]["distance"]["text"];
     timeTOreachDestination = response.data["rows"][0]["elements"][0]["duration"]["text"];
-  }
-
-  getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        Constants.API_KEY,
-        PointLatLng(double.parse(busDetails["current_lat"]),
-            double.parse(busDetails["current_long"])),
-        PointLatLng(double.parse(busDetails["destination_lat"]),
-            double.parse(busDetails["destination_long"])));
-    if (result.points.isNotEmpty) {
-      polylineCoordinates.clear();
-      result.points.forEach(
-        (PointLatLng point) =>
-            polylineCoordinates.add(LatLng(point.latitude, point.longitude)),
-      );
-    }
-    print("Call infinite");
-
     setState(() {
-      fromPoly=true;
+
     });
   }
+
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
@@ -182,7 +199,16 @@ class _parentBusTrackState extends State<parentBusTrack>
           print("hello");
           if (snapshot.hasData) {
             busDetails = snapshot.data.data();
-            getTime(double.parse(busDetails["current_lat"]),double.parse(busDetails["current_long"]), double.parse(busDetails["destination_lat"]),double.parse(busDetails["destination_long"]));
+
+            if(!busDetails["going_to_school"])
+              {
+                getTime(double.parse(busDetails["current_lat"]),double.parse(busDetails["current_long"]), double.parse(Constants.userdata.user_lat),double.parse(Constants.userdata.user_long));
+              }
+            else
+              {
+                getTime(double.parse(busDetails["current_lat"]),double.parse(busDetails["current_long"]), double.parse(busDetails["source_lat"]),double.parse(busDetails["source_long"]));
+              }
+
             if(now==null) {
               now = DateTime.now();
               getPolyPoints();
@@ -191,7 +217,7 @@ class _parentBusTrackState extends State<parentBusTrack>
 
             setMap();
 
-            if(now!.add(new Duration(milliseconds: 5000)).millisecond< DateTime.now().microsecond)
+            if(now!.add(new Duration(milliseconds: 2000)).isBefore(DateTime.now()))
             {
               now= DateTime.now();
               getPolyPoints();

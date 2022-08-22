@@ -3,7 +3,7 @@ import 'package:school_bus_transit/model/schoolModel.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../repository/schoolRep.dart';
 import 'addSchoolScreen.dart';
@@ -67,7 +67,9 @@ class _SchoolSectionState extends State<SchoolSection>{
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                       AddSchoolScreen()
-              ));
+              )).then((value) => {
+                getSchoolList()
+              });
             },
           ),
           // add more IconButton

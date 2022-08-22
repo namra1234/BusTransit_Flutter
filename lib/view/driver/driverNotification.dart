@@ -4,7 +4,7 @@ import 'package:school_bus_transit/model/notificationModel.dart';
 import '../../common/buttonStyle.dart';
 import '../../common/colorConstants.dart';
 
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../model/schoolModel.dart';
 import '../../repository/busRep.dart';
 import '../../repository/notificationRep.dart';

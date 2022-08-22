@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/buttonStyle.dart';
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:image_picker/image_picker.dart';
 

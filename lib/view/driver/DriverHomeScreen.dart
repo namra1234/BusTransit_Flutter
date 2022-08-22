@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:location/location.dart';
 import '../../common/buttonStyle.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';
@@ -58,35 +58,35 @@ class _DriverHomePageState extends State<DriverHomePage>
       );
 
       if(!busDetails["going_to_school"])
-        {
-          _sourceMarker = Marker(
-              markerId: MarkerId("sourceId"),
-              infoWindow: InfoWindow(title: "Source"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: LatLng(double.parse(busDetails["source_lat"]),
-                  double.parse(busDetails["source_long"])));
-          _destMarker = Marker(
-              markerId: MarkerId("destId"),
-              infoWindow: InfoWindow(title: "Destination"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: LatLng(double.parse(busDetails["destination_lat"]),
-                  double.parse(busDetails["destination_long"])));
-        }
+      {
+        _sourceMarker = Marker(
+            markerId: MarkerId("sourceId"),
+            infoWindow: InfoWindow(title: "Source " +busDetails["source"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["source_lat"]),
+                double.parse(busDetails["source_long"])));
+        _destMarker = Marker(
+            markerId: MarkerId("destId"),
+            infoWindow: InfoWindow(title: "Destination - "+busDetails["destination"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["destination_lat"]),
+                double.parse(busDetails["destination_long"])));
+      }
       else
-        {
-          _destMarker = Marker(
-              markerId: MarkerId("sourceId"),
-              infoWindow: InfoWindow(title: "Source"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: LatLng(double.parse(busDetails["source_lat"]),
-                  double.parse(busDetails["source_long"])));
-          _sourceMarker= Marker(
-              markerId: MarkerId("destId"),
-              infoWindow: InfoWindow(title: "Destination"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: LatLng(double.parse(busDetails["destination_lat"]),
-                  double.parse(busDetails["destination_long"])));
-        }
+      {
+        _destMarker = Marker(
+            markerId: MarkerId("sourceId"),
+            infoWindow: InfoWindow(title: "Destination - "+busDetails["source"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["source_lat"]),
+                double.parse(busDetails["source_long"])));
+        _sourceMarker= Marker(
+            markerId: MarkerId("destId"),
+            infoWindow: InfoWindow(title: "Source "+busDetails["destination"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(double.parse(busDetails["destination_lat"]),
+                double.parse(busDetails["destination_long"])));
+      }
 
       _currentMarker = Marker(
           markerId: const MarkerId("currentId"),
@@ -95,22 +95,34 @@ class _DriverHomePageState extends State<DriverHomePage>
           position: LatLng(double.parse(busDetails["current_lat"]),
               double.parse(busDetails["current_long"])));
     }
-
-
   }
 
   getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        Constants.API_KEY,
-        PointLatLng(double.parse(busDetails["current_lat"]),
-            double.parse(busDetails["current_long"])),
-        PointLatLng(double.parse(busDetails["destination_lat"]),
-            double.parse(busDetails["destination_long"])));
+    PolylineResult result;
+    if(busDetails["going_to_school"])
+    {
+      result = await polylinePoints.getRouteBetweenCoordinates(
+          Constants.API_KEY,
+          PointLatLng(double.parse(busDetails["current_lat"]),
+              double.parse(busDetails["current_long"])),
+          PointLatLng(double.parse(busDetails["source_lat"]),
+              double.parse(busDetails["source_long"])));
+    }
+    else
+    {
+      result = await polylinePoints.getRouteBetweenCoordinates(
+          Constants.API_KEY,
+          PointLatLng(double.parse(busDetails["current_lat"]),
+              double.parse(busDetails["current_long"])),
+          PointLatLng(double.parse(busDetails["destination_lat"]),
+              double.parse(busDetails["destination_long"])));
+    }
+
     if (result.points.isNotEmpty) {
       polylineCoordinates.clear();
       result.points.forEach(
-        (PointLatLng point) =>
+            (PointLatLng point) =>
             polylineCoordinates.add(LatLng(point.latitude, point.longitude)),
       );
     }
@@ -121,7 +133,8 @@ class _DriverHomePageState extends State<DriverHomePage>
     });
   }
 
-  void setCustomMarkerIcon() {
+  void setCustomMarkerIcon()
+  {
     BitmapDescriptor.fromAssetImage(
             const ImageConfiguration(size: Size(40, 40)),
             "assets/images/second_logo.png")
@@ -260,7 +273,7 @@ class _DriverHomePageState extends State<DriverHomePage>
 
             setMap();
 
-            if(now!.add(new Duration(milliseconds: 5000)).millisecond< DateTime.now().microsecond)
+            if(now!.add(new Duration(milliseconds: 2000)).isBefore(DateTime.now()))
             {
               now= DateTime.now();
               getPolyPoints();

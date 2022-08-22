@@ -6,7 +6,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../common/util.dart';
 import '../../model/busModel.dart';

@@ -9,7 +9,7 @@ import 'package:school_bus_transit/view/parents/parentNotification.dart';
 import 'package:school_bus_transit/widget/BottomBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 
 

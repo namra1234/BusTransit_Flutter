@@ -6,7 +6,7 @@ import 'package:school_bus_transit/repository/busRep.dart';
 import 'package:school_bus_transit/view/admin/dashBoard.dart';
 import 'package:school_bus_transit/view/driver/driverMainScreen.dart';
 import 'package:school_bus_transit/view/parents/parentHomeScreen.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../repository/userRep.dart';

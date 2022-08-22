@@ -6,7 +6,7 @@ import 'package:school_bus_transit/repository/schoolRep.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../../common/textStyle.dart';
 import '../../model/busModel.dart';
 import '../../repository/busRep.dart';

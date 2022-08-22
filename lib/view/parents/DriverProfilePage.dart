@@ -4,7 +4,7 @@ import 'package:school_bus_transit/repository/userRep.dart';
 
 import '../../common/buttonStyle.dart';
 import '../../common/colorConstants.dart';
-import '../../common/constants.dart';
+import 'package:school_bus_transit/common/constants.dart';
 import '../authentication/signup.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:firebase_storage/firebase_storage.dart';
