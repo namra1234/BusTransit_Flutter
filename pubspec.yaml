@@ -50,6 +50,9 @@ dependencies:
   flutter_local_notifications: 9.1.0
   timezone: ^0.8.0
   rxdart: ^0.27.4
+  firebase_core: ^1.14.1
+  firebase_auth: ^3.3.14
+  flutter_login_facebook:
 
 dev_dependencies:
   flutter_test:

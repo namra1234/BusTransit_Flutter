@@ -19,7 +19,8 @@ class UserModel {
   UserModel(this.user_id,this.email_id,this.fullName,  this.address,this.photo_url,this.phone_no,this.user_type,
       this.bus_id,  this.gender,this.user_lat,this.user_long,this.school_id);
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson()
+  {
     return {
       'user_id': user_id,
       'email_id': email_id,

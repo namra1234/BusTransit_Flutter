@@ -119,7 +119,7 @@ class _DriverMainPageState extends State<DriverMainPage>
               ),
               IconButton(
                   icon: Icon(
-                    Icons.person,
+                    Icons.logout,
                     color: Colors.black,
                   ),
                   onPressed: _showDialog

@@ -113,7 +113,7 @@ class _parentHomeScreenState extends State<parentHomeScreen>{
             ),
             IconButton(
               icon: Icon(
-                  Icons.person,
+                  Icons.logout,
                   color: Colors.black,
                 ),
                 onPressed: _showDialog

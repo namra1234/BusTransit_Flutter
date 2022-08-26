@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
 import 'package:school_bus_transit/repository/busRep.dart';
 import 'package:school_bus_transit/view/admin/dashBoard.dart';
+import 'package:school_bus_transit/view/authentication/signupUsingFaceook.dart';
 import 'package:school_bus_transit/view/driver/driverMainScreen.dart';
 import 'package:school_bus_transit/view/parents/parentHomeScreen.dart';
 import 'package:school_bus_transit/common/constants.dart';
@@ -12,6 +15,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../repository/userRep.dart';
 import '../driver/driverNotification.dart';
 import './signup.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -126,6 +132,94 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
+  }
+
+  final fb = FacebookLogin();
+
+
+
+  Future signInFB() async {
+
+    // Log in
+    final res = await fb.logIn(permissions : [
+      FacebookPermission.publicProfile,
+      FacebookPermission.email,
+    ]);
+
+
+    // Check result status
+    switch (res.status) {
+      case FacebookLoginStatus.success:
+      // Logged in
+
+      // Send access token to server for validation and auth
+        final FacebookAccessToken? accessToken = res.accessToken;
+        print('Access token: ${accessToken!.token}');
+
+        // Get profile data
+        final profile = await fb.getUserProfile();
+        print('Hello, ${profile!.name}! You ID: ${profile.userId}');
+
+        // Get user profile image url
+        final imageUrl = await fb.getProfileImageUrl(width: 100);
+        print('Your profile image: $imageUrl');
+
+        // Get email (since we request email permission)
+        final email = await fb.getUserEmail();
+        // But user can decline permission
+        if (email != null)
+          print('And your email is $email');
+
+
+        await UserRepository().getUser(profile.userId.toString());
+
+        if(Constants.userdata.user_id=="")
+          {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    SignupUsingFaceBook(userId: profile.userId.toString(),userImg :imageUrl.toString(), userName: profile.name.toString(),userEmail: email.toString())
+            ));
+          }
+        else
+          {
+            if(Constants.userdata.user_type == "DRIVER")
+            {
+
+              if(Constants.userdata.bus_id != "")
+              {
+                await BusRepository().getBusInfo(Constants.userdata.bus_id);
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                    DriverMainPage()), (Route<dynamic> route) => false);
+              }
+              else
+              {
+                showSnackBar("Please contact to Admin, to assign a bus to you");
+              }
+
+            }
+            else if(Constants.userdata.user_type == "PARENT")
+            {
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  parentHomeScreen()), (Route<dynamic> route) => false);
+            }
+            showSnackBar("Login Successfully");
+          }
+
+
+
+
+
+
+        break;
+      case FacebookLoginStatus.cancel:
+      // User cancel log in
+        break;
+      case FacebookLoginStatus.error:
+      // Log in failed
+        print('Error while log in: ${res.error}');
+        break;
+    }
+
   }
 
   @override
@@ -255,8 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             InkWell(
-                              onTap: () {
-                                },
+                              onTap: signInFB,
                               child:
                                   Padding(
                                       padding:EdgeInsets.fromLTRB(25.0,7.0,10.0,10.0),
