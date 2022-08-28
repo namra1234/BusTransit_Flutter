@@ -88,7 +88,7 @@ class _ParentNotificationState extends State<ParentNotification> {
               if(!firstTime)
                 {
                   NotificationService().showNotification(
-                      1, notificationData[notificationData.length-1].title, notificationData[notificationData.length-1].message);
+                      1, notificationData[0].title, notificationData[0].message);
                 }
               firstTime = false;
               return Scaffold(
@@ -127,6 +127,15 @@ class _ParentNotificationState extends State<ParentNotification> {
   Widget titleSection(NotificationModel notification , int index) {
 
     int num = notificationData.length - index;
+
+    Duration d = new Duration(days: 1);
+    bool redcolor = false;
+    if(DateTime.now().subtract(d).isBefore(notification.timestamp))
+      {
+        redcolor = true;
+      }
+
+
     return Padding(
       padding:  EdgeInsets.only(left:20,right:20,top:10),
       child: Container(
@@ -154,7 +163,7 @@ class _ParentNotificationState extends State<ParentNotification> {
               ),
               Container(
 width: Constants.width,
-                color: Colors.amber,
+                color:redcolor ? Colors.red : Colors.amber,
                 child: Column(
                   children: <Widget>[
                     SizedBox(height: 10,),

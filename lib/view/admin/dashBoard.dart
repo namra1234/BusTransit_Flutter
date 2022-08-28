@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:school_bus_transit/common/buttonStyle.dart';
 import 'package:school_bus_transit/common/colorConstants.dart';
 import 'package:school_bus_transit/common/textStyle.dart';
+import 'package:school_bus_transit/repository/driverRep.dart';
 import 'package:school_bus_transit/view/admin/schoolSection.dart';
 import 'package:school_bus_transit/view/authentication/login.dart';
 import 'package:school_bus_transit/common/constants.dart';
@@ -65,6 +66,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     driverCount = 0;
     getSchoolCount();
     getBusCount();
+    getDriverCount();
   }
 
   @override
@@ -264,5 +266,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     setState(() {});
   }
 
+  getDriverCount() async
+  {
+    driverCount = await DriverRepository().driverCount();
+    setState(() {
+    });
+  }
 
 }
